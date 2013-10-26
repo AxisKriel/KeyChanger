@@ -17,16 +17,16 @@ namespace KeyChanger
             : base(game)
         {
         }
-        private static string savepath = TShock.SavePath; //NEW
+        private static string savepath = TShock.SavePath;
         private static Config config;
-        private static string KeyTypes = /*"gold | */"jungle, temple, crimson, frozen, hallowed, corruption";
+        private static string KeyTypes = "jungle, temple, crimson, frozen, hallowed, corruption";
         public Region marketregion = new Region();                      // |All allowed
         public Region jungleregion = new Region();                      // |Jungle allowed
         public Region templeregion = new Region();                      // |Temple allowed
         public Region crimsonregion = new Region();                     // |Crimson Allowed
         public Region frozenregion = new Region();                      // |Frozen Allowed
         public Region hallowedregion = new Region();                    // |Hallowed Allowed
-        public Region corruptionregion = new Region();                   // |Corruption Allowed
+        public Region corruptionregion = new Region();                  // |Corruption Allowed
 
         public override Version Version
         {
@@ -68,7 +68,7 @@ namespace KeyChanger
         class Config
         {
             public bool EnableRegionEnchanges = false;                      // |Default set to false
-            public bool MarketOnly = true;                                  // |Use only a general market region
+            public bool MarketMode = false;                                 // |Use only a general market region
             public bool EnableJungleKey = true;
             public bool EnableTempleKey = true;
             public bool EnableFrozenKey = true;
@@ -76,7 +76,6 @@ namespace KeyChanger
             public bool EnableHallowedKey = true;
             public bool EnableCorruptionKey = true;
 
-            //public int[] GoldKeyItem = new int[] { 1 };                     // |Placeholder
             public int JungleKeyItem = 1156;                                // |Piranha Gun
             public int TempleKeyItem = 1293;                                // |Lihzahrd Power Cell
             public int FrozenKeyItem = 1572;                                // |Frost Hydra Staff
@@ -87,7 +86,7 @@ namespace KeyChanger
             public string JungleItemName = "Piranha Gun";                   // |Jungle Item Name
             public string TempleItemName = "Lihzahrd Power Cell";           // |Temple Item Name
             public string FrozenItemName = "Staff of the Frost Hydra";      // |Frost Item Name
-            public string CrimsonItemName = "Vampire Knifes";               // |Crimson Item Name
+            public string CrimsonItemName = "Vampire Knives";               // |Crimson Item Name
             public string HallowedItemName = "Rainbow Gun";                 // |Hallowed Item Name
             public string CorruptionItemName = "Scourge of the Corruptor";  // |Jungle Item Name
 
@@ -166,17 +165,16 @@ namespace KeyChanger
             if (args.Parameters.Count == 0)
             {
                 // Plugin Info
-                ply.SendMessage("KeyChanger plugin by Enerdy", Color.Goldenrod);
-                ply.SendMessage("Description: Changes special chest keys into their specific items", Color.Goldenrod);
-                ply.SendMessage("Syntax: /key <change/reload> [type]", Color.Goldenrod);
-                ply.SendMessage("Available types: " + KeyTypes, Color.Goldenrod);
-                ply.SendMessage("Type /key help for more info", Color.Goldenrod);
+                ply.SendMessage("KeyChanger plugin by Enerdy", Color.SkyBlue);
+                ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
+                ply.SendMessage("Syntax: /key <help/list/change/reload> [type]", Color.SkyBlue);
+                ply.SendMessage("Type /key help for more info", Color.SkyBlue);
             }
             else if (args.Parameters[0].ToLower() == "change" && args.Parameters.Count == 1)
             {
                 ply.SendErrorMessage("Invalid syntax! Proper syntax: /key change <type>");
             }
-            else if (args.Parameters[0].ToLower() == "change" || args.Parameters[0].ToLower() == "reload" || args.Parameters[0].ToLower() == "help")
+            else if (args.Parameters[0].ToLower() == "change" || args.Parameters[0].ToLower() == "reload" || args.Parameters[0].ToLower() == "help" || args.Parameters[0].ToLower() == "list")
             {
                 string cmd = args.Parameters[0].ToLower();
                 switch (cmd)
@@ -201,39 +199,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.TempleRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region jungleregion = TShock.Regions.GetRegionByName(config.JungleRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= jungleregion.Area.X && ply.TileX <= jungleregion.Area.X + jungleregion.Area.Width && ply.TileY >= jungleregion.Area.Y && ply.TileY <= jungleregion.Area.Y + jungleregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.JungleRegion != null)
+                                        {
+                                            Region jungleregion = TShock.Regions.GetRegionByName(config.JungleRegion);
+                                            if (ply.TileX >= jungleregion.Area.X && ply.TileX <= jungleregion.Area.X + jungleregion.Area.Width && ply.TileY >= jungleregion.Area.Y && ply.TileY <= jungleregion.Area.Y + jungleregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.JungleRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 // Loops between inventory slots in search of the key. If it's not found, it returns the error message, since the if statement is never executed, and the command never broken.
                                 for (int i = 0; i < 50; i++)
@@ -272,39 +284,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.TempleRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region templeregion = TShock.Regions.GetRegionByName(config.TempleRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= templeregion.Area.X && ply.TileX <= templeregion.Area.X + templeregion.Area.Width && ply.TileY >= templeregion.Area.Y && ply.TileY <= templeregion.Area.Y + templeregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.TempleRegion != null)
+                                        {
+                                            Region templeregion = TShock.Regions.GetRegionByName(config.TempleRegion);
+                                            if (ply.TileX >= templeregion.Area.X && ply.TileX <= templeregion.Area.X + templeregion.Area.Width && ply.TileY >= templeregion.Area.Y && ply.TileY <= templeregion.Area.Y + templeregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.TempleRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 for (int i = 0; i < 50; i++)
                                 {
@@ -342,39 +368,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.CrimsonRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region crimsonregion = TShock.Regions.GetRegionByName(config.CrimsonRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= crimsonregion.Area.X && ply.TileX <= crimsonregion.Area.X + crimsonregion.Area.Width && ply.TileY >= crimsonregion.Area.Y && ply.TileY <= crimsonregion.Area.Y + crimsonregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.CrimsonRegion != null)
+                                        {
+                                            Region crimsonregion = TShock.Regions.GetRegionByName(config.CrimsonRegion);
+                                            if (ply.TileX >= crimsonregion.Area.X && ply.TileX <= crimsonregion.Area.X + crimsonregion.Area.Width && ply.TileY >= crimsonregion.Area.Y && ply.TileY <= crimsonregion.Area.Y + crimsonregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.CrimsonRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 for (int i = 0; i < 50; i++)
                                 {
@@ -412,39 +452,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.FrozenRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region frozenregion = TShock.Regions.GetRegionByName(config.FrozenRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= frozenregion.Area.X && ply.TileX <= frozenregion.Area.X + frozenregion.Area.Width && ply.TileY >= frozenregion.Area.Y && ply.TileY <= frozenregion.Area.Y + frozenregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.FrozenRegion != null)
+                                        {
+                                            Region frozenregion = TShock.Regions.GetRegionByName(config.FrozenRegion);
+                                            if (ply.TileX >= frozenregion.Area.X && ply.TileX <= frozenregion.Area.X + frozenregion.Area.Width && ply.TileY >= frozenregion.Area.Y && ply.TileY <= frozenregion.Area.Y + frozenregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.FrozenRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 for (int i = 0; i < 50; i++)
                                 {
@@ -482,39 +536,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.HallowedRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region hallowedregion = TShock.Regions.GetRegionByName(config.HallowedRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= hallowedregion.Area.X && ply.TileX <= hallowedregion.Area.X + hallowedregion.Area.Width && ply.TileY >= hallowedregion.Area.Y && ply.TileY <= hallowedregion.Area.Y + hallowedregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.HallowedRegion != null)
+                                        {
+                                            Region hallowedregion = TShock.Regions.GetRegionByName(config.HallowedRegion);
+                                            if (ply.TileX >= hallowedregion.Area.X && ply.TileX <= hallowedregion.Area.X + hallowedregion.Area.Width && ply.TileY >= hallowedregion.Area.Y && ply.TileY <= hallowedregion.Area.Y + hallowedregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.HallowedRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 for (int i = 0; i < 50; i++)
                                 {
@@ -552,39 +620,53 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                if (config.EnableRegionEnchanges && config.CorruptionRegion != null)
+                                #region EnableRegionEnchanges
+                                if (config.EnableRegionEnchanges)
                                 {
-                                    Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
-                                    Region corruptionregion = TShock.Regions.GetRegionByName(config.CorruptionRegion);
-
-                                    if (config.MarketOnly)
+                                    if (config.MarketMode)
                                     {
-                                        if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                        if (config.MarketRegion != null)
                                         {
-                                            // Keep running the code 
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
                                         }
-                                        else
+                                        else if (config.MarketRegion == null)
                                         {
-                                            ply.SendErrorMessage("You're not inside the required region!");
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
                                             break;
                                         }
                                     }
-
-                                    if ((ply.TileX >= corruptionregion.Area.X && ply.TileX <= corruptionregion.Area.X + corruptionregion.Area.Width && ply.TileY >= corruptionregion.Area.Y && ply.TileY <= corruptionregion.Area.Y + corruptionregion.Area.Height) || (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height))
+                                    else if (!config.MarketMode)
                                     {
-                                        // Keep running the code 
-                                    }
-                                    else
-                                    {
-                                        ply.SendErrorMessage("You're not inside the required region!");
-                                        break;
+                                        if (config.CorruptionRegion != null)
+                                        {
+                                            Region corruptionregion = TShock.Regions.GetRegionByName(config.CorruptionRegion);
+                                            if (ply.TileX >= corruptionregion.Area.X && ply.TileX <= corruptionregion.Area.X + corruptionregion.Area.Width && ply.TileY >= corruptionregion.Area.Y && ply.TileY <= corruptionregion.Area.Y + corruptionregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.CorruptionRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
                                     }
                                 }
-                                else if (config.EnableRegionEnchanges)
-                                {
-                                    ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
-                                    break;
-                                }
+                                #endregion
 
                                 for (int i = 0; i < 50; i++)
                                 {
@@ -667,12 +749,12 @@ namespace KeyChanger
 
                             if (ReadConfig())
                             {
-                                ply.SendMessage("KeyChange config reloaded sucessfully.", Color.Goldenrod);
+                                ply.SendMessage("KeyChanger config reloaded sucessfully.", Color.Green);
                                 break;
                             }
                             else
                             {
-                                ply.SendErrorMessage("KeyChange config reloaded unsucessfully. Check logs for details.");
+                                ply.SendErrorMessage("KeyChanger config reloaded unsucessfully. Check logs for details.");
                                 break;
                             }
                         }
@@ -680,21 +762,35 @@ namespace KeyChanger
                     case "help":
                         {
                             ply.SendInfoMessage("KeyChanger Help File");
-                            ply.SendInfoMessage("With this plugin, you may trade your special keys in enchange for special items defined in the config file. Default items are set based off the correspondent Dungeon Chest's contents.");
-                            ply.SendInfoMessage("How to use: Firstly, make sure you have the key you plan on enchanging in your inventory, and that you have free inventory slots. Then, type /key change <key type> in order to enchange the key in.");
+                            ply.SendInfoMessage("key - Shows plugin info");
+                            ply.SendInfoMessage("key change <type> - Enchanges a key of the input type");
+                            ply.SendInfoMessage("key list - Shows a list of available keys and items");
+                            ply.SendInfoMessage("key reload - Reloads the config file");
+                            ply.SendInfoMessage("");
+                            ply.SendInfoMessage("If an enchange fails, make sure your inventory has free slots");
                             break;
                         }
 
+                    case "list":
+                        {
+                            ply.SendMessage("jungle key     -> " + config.JungleItemName, Color.Goldenrod);
+                            ply.SendMessage("temple key     -> " + config.TempleItemName, Color.Goldenrod);
+                            ply.SendMessage("crimson key    -> " + config.CrimsonItemName, Color.Goldenrod);
+                            ply.SendMessage("frozen key     -> " + config.FrozenItemName, Color.Goldenrod);
+                            ply.SendMessage("hallowed key   -> " + config.HallowedItemName, Color.Goldenrod);
+                            ply.SendMessage("corruption key -> " + config.CorruptionItemName, Color.Goldenrod);
+                            break;
+                        }
                     default:
                         {
-                            ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/change/reload> [type]");
+                            ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/change/reload> [type]");
                             break;
                         }
                 }
             }
             else
             {
-                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/change/reload> [type]");
+                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/change/reload> [type]");
             }
         }
     }
