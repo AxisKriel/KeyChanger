@@ -30,7 +30,7 @@ namespace KeyChanger
 
         public override Version Version
         {
-            get { return new Version("1.2"); }
+            get { return new Version("1.2.1"); }
         }
 
 
@@ -48,7 +48,7 @@ namespace KeyChanger
 
         public override string Description
         {
-            get { return "SBPlanet KeyChanger System: Enchanges special chest keys by their correspondent items"; }
+            get { return "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items"; }
         }
 
 
@@ -67,7 +67,7 @@ namespace KeyChanger
         //Config Contents
         class Config
         {
-            public bool EnableRegionEnchanges = false;                      // |Default set to false
+            public bool EnableRegionExchanges = false;                      // |Default set to false
             public bool MarketMode = false;                                 // |Use only a general market region
             public bool EnableJungleKey = true;
             public bool EnableTempleKey = true;
@@ -85,7 +85,7 @@ namespace KeyChanger
 
             // REMOVED ITEM NAMES SINCE THEY'RE NOT NECESSARY ANYMORE
 
-            // Those are optional; They're only needed if EnableRegionEnchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
+            // Those are optional; They're only needed if EnableRegionExchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
             public string MarketRegion = null;
             public string JungleRegion = null;
             public string TempleRegion = null;
@@ -196,8 +196,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -259,12 +259,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -282,8 +282,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -344,12 +344,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -367,8 +367,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -429,12 +429,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -452,8 +452,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -514,12 +514,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -537,8 +537,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -599,12 +599,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -622,8 +622,8 @@ namespace KeyChanger
                                     break;
                                 }
 
-                                #region EnableRegionEnchanges
-                                if (config.EnableRegionEnchanges)
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
                                 {
                                     if (config.MarketMode)
                                     {
@@ -684,12 +684,12 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
                                 {
-                                    ply.SendErrorMessage("Enchange failed: Key not found / No free slots");
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
                                     break;
                                 }
                             }
@@ -729,7 +729,7 @@ namespace KeyChanger
                         //    if (gotKey)
                         //    {
                         //        args.Player.GiveItem(keyItem, itemName, 0, 0, 1);
-                        //        ply.SendMessage(string.Format("Enchange complete! Received 1 {0}!", itemName), Color.Goldenrod);
+                        //        ply.SendMessage(string.Format("Exchange complete! Received 1 {0}!", itemName), Color.Goldenrod);
                         //        timeout = true;
                         //        break;
                         //    }
@@ -765,7 +765,7 @@ namespace KeyChanger
                         {
                             ply.SendInfoMessage("KeyChanger Help File");
                             ply.SendInfoMessage("key - Shows plugin info");
-                            ply.SendInfoMessage("key change <type> - Enchanges a key of the input type");
+                            ply.SendInfoMessage("key change <type> - Exchanges a key of the input type");
                             ply.SendInfoMessage("key list - Shows a list of available keys and items");
                             ply.SendInfoMessage("key reload - Reloads the config file");
                             ply.SendInfoMessage("");
