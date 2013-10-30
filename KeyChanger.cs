@@ -30,7 +30,7 @@ namespace KeyChanger
 
         public override Version Version
         {
-            get { return new Version("1.0"); }
+            get { return new Version("1.2"); }
         }
 
 
@@ -83,12 +83,7 @@ namespace KeyChanger
             public int HallowedKeyItem = 1260;                              // |Rainbow Gun
             public int CorruptionKeyItem = 1571;                            // |Scourge of the Corruptor
 
-            public string JungleItemName = "Piranha Gun";                   // |Jungle Item Name
-            public string TempleItemName = "Lihzahrd Power Cell";           // |Temple Item Name
-            public string FrozenItemName = "Staff of the Frost Hydra";      // |Frost Item Name
-            public string CrimsonItemName = "Vampire Knives";               // |Crimson Item Name
-            public string HallowedItemName = "Rainbow Gun";                 // |Hallowed Item Name
-            public string CorruptionItemName = "Scourge of the Corruptor";  // |Jungle Item Name
+            // REMOVED ITEM NAMES SINCE THEY'RE NOT NECESSARY ANYMORE
 
             // Those are optional; They're only needed if EnableRegionEnchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
             public string MarketRegion = null;
@@ -174,7 +169,7 @@ namespace KeyChanger
             {
                 ply.SendErrorMessage("Invalid syntax! Proper syntax: /key change <type>");
             }
-            else if (args.Parameters[0].ToLower() == "change" || args.Parameters[0].ToLower() == "reload" || args.Parameters[0].ToLower() == "help" || args.Parameters[0].ToLower() == "list")
+            else if (args.Parameters.Count >= 1)
             {
                 string cmd = args.Parameters[0].ToLower();
                 switch (cmd)
@@ -183,6 +178,7 @@ namespace KeyChanger
                         {
                             // Required values
                             string keyType = args.Parameters[1].ToLower();
+                            string itemName = "";
                             int keyID = 0;
                             int keyItem = 0;
                             bool keyGiven = false;
@@ -192,6 +188,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.JungleKeyItem;
                                 keyID = 1533;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableJungleKey)
                                 {
@@ -262,7 +259,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.JungleItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -277,6 +274,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.TempleKeyItem;
                                 keyID = 1141;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableTempleKey)
                                 {
@@ -346,7 +344,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.TempleItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -361,6 +359,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.CrimsonKeyItem;
                                 keyID = 1535;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableCrimsonKey)
                                 {
@@ -430,7 +429,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.CrimsonItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -445,6 +444,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.FrozenKeyItem;
                                 keyID = 1537;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableFrozenKey)
                                 {
@@ -514,7 +514,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.FrozenItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -529,6 +529,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.HallowedKeyItem;
                                 keyID = 1536;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableHallowedKey)
                                 {
@@ -598,7 +599,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.HallowedItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -613,6 +614,7 @@ namespace KeyChanger
                             {
                                 keyItem = config.CorruptionKeyItem;
                                 keyID = 1534;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
 
                                 if (!config.EnableCorruptionKey)
                                 {
@@ -682,7 +684,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Enchanged 1 " + config.CorruptionItemName + "(s)!", Color.Goldenrod);
+                                    ply.SendMessage("Enchanged 1 " + itemName + "(s)!", Color.Goldenrod);
                                     break;
                                 }
                                 else
@@ -773,12 +775,12 @@ namespace KeyChanger
 
                     case "list":
                         {
-                            ply.SendMessage("jungle key     -> " + config.JungleItemName, Color.Goldenrod);
-                            ply.SendMessage("temple key     -> " + config.TempleItemName, Color.Goldenrod);
-                            ply.SendMessage("crimson key    -> " + config.CrimsonItemName, Color.Goldenrod);
-                            ply.SendMessage("frozen key     -> " + config.FrozenItemName, Color.Goldenrod);
-                            ply.SendMessage("hallowed key   -> " + config.HallowedItemName, Color.Goldenrod);
-                            ply.SendMessage("corruption key -> " + config.CorruptionItemName, Color.Goldenrod);
+                            ply.SendMessage("jungle key     -> " + TShock.Utils.GetItemById(config.JungleKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("temple key     -> " + TShock.Utils.GetItemById(config.TempleKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("crimson key    -> " + TShock.Utils.GetItemById(config.CrimsonKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("frozen key     -> " + TShock.Utils.GetItemById(config.FrozenKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("hallowed key   -> " + TShock.Utils.GetItemById(config.HallowedKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("corruption key -> " + TShock.Utils.GetItemById(config.CorruptionKeyItem).name, Color.Goldenrod);
                             break;
                         }
                     default:
