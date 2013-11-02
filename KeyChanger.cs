@@ -802,6 +802,12 @@ namespace KeyChanger
 
                     case "mode":
                         {
+                            if (!ply.Group.HasPermission("key.mode"))
+                            {
+                                ply.SendErrorMessage("You do not have access to this command.");
+                                break;
+                            }
+
                             if (args.Parameters.Count < 2)
                             {
                                 ply.SendErrorMessage("Invalid syntax! Proper syntax: /key mode <normal/region/market>");
