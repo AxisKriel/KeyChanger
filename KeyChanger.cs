@@ -19,7 +19,9 @@ namespace KeyChanger
         }
         private static string savepath = TShock.SavePath;
         private static Config config;
-        private static string KeyTypes = "jungle, temple, crimson, frozen, hallowed, corruption";
+        //private static string[] KeyTypes = new string[] { "jungle", "temple", "crimson", "frozen", "hallowed", "corruption" };
+        public static Random rand = new Random();
+        //public static List<int> goldItem = new List<int>();             // |List for Gold Items
         public Region marketregion = new Region();                      // |All allowed
         public Region jungleregion = new Region();                      // |Jungle allowed
         public Region templeregion = new Region();                      // |Temple allowed
@@ -28,9 +30,16 @@ namespace KeyChanger
         public Region hallowedregion = new Region();                    // |Hallowed Allowed
         public Region corruptionregion = new Region();                  // |Corruption Allowed
 
+        public static List<string> jungleitems = new List<string>();
+        public static List<string> templeitems = new List<string>();
+        public static List<string> crimsonitems = new List<string>();
+        public static List<string> frozenitems = new List<string>();
+        public static List<string> halloweditems = new List<string>();
+        public static List<string> corruptionitems = new List<string>();
+
         public override Version Version
         {
-            get { return new Version("1.2.1"); }
+            get { return new Version("1.3"); }
         }
 
 
@@ -57,6 +66,7 @@ namespace KeyChanger
             //This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
             Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key"));
             ReadConfig();
+            IdToName();
         }
 
         protected override void Dispose(bool disposing)
@@ -64,26 +74,71 @@ namespace KeyChanger
             base.Dispose(disposing);
         }
 
+        public static void IdToName()
+        {
+            for (int i = 0; i < config.JungleKeyItem.Length; i++)
+            {
+                if (!jungleitems.Contains(TShock.Utils.GetItemById(config.JungleKeyItem[i]).name))
+                {
+                    jungleitems.Add(TShock.Utils.GetItemById(config.JungleKeyItem[i]).name);
+                }
+            }
+            for (int i = 0; i < config.TempleKeyItem.Length; i++)
+            {
+                if (!templeitems.Contains(TShock.Utils.GetItemById(config.TempleKeyItem[i]).name))
+                {
+                    templeitems.Add(TShock.Utils.GetItemById(config.TempleKeyItem[i]).name);
+                }
+            }
+            for (int i = 0; i < config.CrimsonKeyItem.Length; i++)
+            {
+                if (!crimsonitems.Contains(TShock.Utils.GetItemById(config.CrimsonKeyItem[i]).name))
+                {
+                    crimsonitems.Add(TShock.Utils.GetItemById(config.CrimsonKeyItem[i]).name);
+                }
+            }
+            for (int i = 0; i < config.FrozenKeyItem.Length; i++)
+            {
+                if (!frozenitems.Contains(TShock.Utils.GetItemById(config.FrozenKeyItem[i]).name))
+                {
+                    frozenitems.Add(TShock.Utils.GetItemById(config.FrozenKeyItem[i]).name);
+                }
+            }
+            for (int i = 0; i < config.HallowedKeyItem.Length; i++)
+            {
+                if (!halloweditems.Contains(TShock.Utils.GetItemById(config.HallowedKeyItem[i]).name))
+                {
+                    halloweditems.Add(TShock.Utils.GetItemById(config.HallowedKeyItem[i]).name);
+                }
+            }
+            for (int i = 0; i < config.CorruptionKeyItem.Length; i++)
+            {
+                if (!corruptionitems.Contains(TShock.Utils.GetItemById(config.CorruptionKeyItem[i]).name))
+                {
+                    corruptionitems.Add(TShock.Utils.GetItemById(config.CorruptionKeyItem[i]).name);
+                }
+            }
+        }
+
         //Config Contents
         class Config
         {
             public bool EnableRegionExchanges = false;                      // |Default set to false
             public bool MarketMode = false;                                 // |Use only a general market region
+            //public bool EnableGoldKey = true;                               // |Gold Key works similar to a currency
             public bool EnableJungleKey = true;
             public bool EnableTempleKey = true;
             public bool EnableFrozenKey = true;
             public bool EnableCrimsonKey = true;
             public bool EnableHallowedKey = true;
             public bool EnableCorruptionKey = true;
-
-            public int JungleKeyItem = 1156;                                // |Piranha Gun
-            public int TempleKeyItem = 1293;                                // |Lihzahrd Power Cell
-            public int FrozenKeyItem = 1572;                                // |Frost Hydra Staff
-            public int CrimsonKeyItem = 1569;                               // |Vampire Knifes
-            public int HallowedKeyItem = 1260;                              // |Rainbow Gun
-            public int CorruptionKeyItem = 1571;                            // |Scourge of the Corruptor
-
-            // REMOVED ITEM NAMES SINCE THEY'RE NOT NECESSARY ANYMORE
+ 
+            public int[] JungleKeyItem = new int[] { 1156 };                // |Piranha Gun
+            public int[] TempleKeyItem = new int[] { 1293 };                // |Lihzahrd Power Cell
+            public int[] FrozenKeyItem = new int[] { 1572 };                // |Frost Hydra Staff
+            public int[] CrimsonKeyItem = new int[] { 1569 };               // |Vampire Knifes
+            public int[] HallowedKeyItem = new int[] { 1260 };              // |Rainbow Gun
+            public int[] CorruptionKeyItem = new int[] { 1571 };            // |Scourge of the Corruptor
 
             // Those are optional; They're only needed if EnableRegionExchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
             public string MarketRegion = null;
@@ -160,9 +215,9 @@ namespace KeyChanger
             if (args.Parameters.Count == 0)
             {
                 // Plugin Info
-                ply.SendMessage("KeyChanger plugin by Enerdy", Color.SkyBlue);
+                ply.SendMessage("KeyChanger (v1.3) by Enerdy", Color.SkyBlue);
                 ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
-                ply.SendMessage("Syntax: /key <help/list/change/reload> [type]", Color.SkyBlue);
+                ply.SendMessage("Syntax: /key <help/list/mode/change/reload> [type]", Color.SkyBlue);
                 ply.SendMessage("Type /key help for more info", Color.SkyBlue);
             }
             else if (args.Parameters[0].ToLower() == "change" && args.Parameters.Count == 1)
@@ -186,7 +241,7 @@ namespace KeyChanger
                             #region Jungle
                             if (keyType == "jungle")
                             {
-                                keyItem = config.JungleKeyItem;
+                                keyItem = config.JungleKeyItem[rand.Next(0, config.JungleKeyItem.Length)];
                                 keyID = 1533;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -259,7 +314,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -272,7 +327,7 @@ namespace KeyChanger
                             #region Temple
                             else if (keyType == "temple")
                             {
-                                keyItem = config.TempleKeyItem;
+                                keyItem = config.TempleKeyItem[rand.Next(0, config.TempleKeyItem.Length)];
                                 keyID = 1141;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -344,7 +399,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -357,7 +412,7 @@ namespace KeyChanger
                             #region Crimson
                             else if (keyType == "crimson")
                             {
-                                keyItem = config.CrimsonKeyItem;
+                                keyItem = config.CrimsonKeyItem[rand.Next(0, config.CrimsonKeyItem.Length)];
                                 keyID = 1535;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -429,7 +484,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -442,7 +497,7 @@ namespace KeyChanger
                             #region Frozen
                             else if (keyType == "frozen")
                             {
-                                keyItem = config.FrozenKeyItem;
+                                keyItem = config.FrozenKeyItem[rand.Next(0, config.FrozenKeyItem.Length)];
                                 keyID = 1537;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -514,7 +569,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -527,7 +582,7 @@ namespace KeyChanger
                             #region Hallowed
                             else if (keyType == "hallowed")
                             {
-                                keyItem = config.HallowedKeyItem;
+                                keyItem = config.HallowedKeyItem[rand.Next(0, config.HallowedKeyItem.Length)];
                                 keyID = 1536;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -599,7 +654,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -612,7 +667,7 @@ namespace KeyChanger
                             #region Corruption
                             else if (keyType == "corruption")
                             {
-                                keyItem = config.CorruptionKeyItem;
+                                keyItem = config.CorruptionKeyItem[rand.Next(0, config.CorruptionKeyItem.Length)];
                                 keyID = 1534;
                                 itemName = TShock.Utils.GetItemById(keyItem).name;
 
@@ -684,7 +739,7 @@ namespace KeyChanger
                                 }
                                 if (keyGiven)
                                 {
-                                    ply.SendMessage("Exchanged 1 " + itemName + "(s)!", Color.Goldenrod);
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
                                     break;
                                 }
                                 else
@@ -696,49 +751,9 @@ namespace KeyChanger
                             #endregion
                             else
                             {
-                                ply.SendErrorMessage(string.Format("Invalid type! Available types: {0}", KeyTypes));
+                                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key change <type>");
                                 break;
                             }
-
-                            #region Scrapped Code
-                            // Some code copied from AutoShop which ended up being scrapped. Might remove it later...
-
-                            //    ply.SendMessage(string.Format("Key type set to {0}! Waiting for the key to drop nearby...", keyType), Color.Goldenrod);
-                        //    TimeSpan time = new TimeSpan(0, 0, 10);
-
-                        //    {
-                        //        for (int j = 0; j < 200; j++)
-                        //        {
-                        //            if (
-                        //(Math.Sqrt(Math.Pow(Main.item[j].position.X - ply.X, 2) +
-                        //           Math.Pow(Main.item[j].position.Y - ply.Y, 2)) < 7 * 16) && (Main.item[j].active))
-                        //            //if (Main.item[i].position.X - com
-                        //            {
-                        //                Main.item[j].active = false;
-                        //                NetMessage.SendData(0x15, -1, -1, "", j, 0f, 0f, 0f, 0);
-                        //                gotKey = true;
-                        //                break; //found the item, break.
-
-                        //            } //end of if item
-
-                        //        } //end for loop
-
-                                
-                        //    }
-
-                        //    if (gotKey)
-                        //    {
-                        //        args.Player.GiveItem(keyItem, itemName, 0, 0, 1);
-                        //        ply.SendMessage(string.Format("Exchange complete! Received 1 {0}!", itemName), Color.Goldenrod);
-                        //        timeout = true;
-                        //        break;
-                        //    }
-                        //    else if (timeout)
-                        //    {
-                        //        break;
-                            //    }
-                            #endregion
-
                         }
 
                     case "reload":
@@ -749,6 +764,7 @@ namespace KeyChanger
                                 break;
                             }
 
+                            IdToName();
                             if (ReadConfig())
                             {
                                 ply.SendMessage("KeyChanger config reloaded sucessfully.", Color.Green);
@@ -764,35 +780,69 @@ namespace KeyChanger
                     case "help":
                         {
                             ply.SendInfoMessage("KeyChanger Help File");
-                            ply.SendInfoMessage("key - Shows plugin info");
-                            ply.SendInfoMessage("key change <type> - Exchanges a key of the input type");
-                            ply.SendInfoMessage("key list - Shows a list of available keys and items");
-                            ply.SendInfoMessage("key reload - Reloads the config file");
-                            ply.SendInfoMessage("");
-                            ply.SendInfoMessage("If an enchange fails, make sure your inventory has free slots");
+                            ply.SendInfoMessage("/key - Shows plugin info");
+                            ply.SendInfoMessage("/key change <type> - Exchanges a key of the input type");
+                            ply.SendInfoMessage("/key list - Shows a list of available keys and items");
+                            ply.SendInfoMessage("/key mode <mode> - Changes exchange mode");
+                            ply.SendInfoMessage("/key reload - Reloads the config file");
+                            ply.SendInfoMessage("If an exchange fails, make sure your inventory has free slots");
                             break;
                         }
 
                     case "list":
                         {
-                            ply.SendMessage("jungle key     -> " + TShock.Utils.GetItemById(config.JungleKeyItem).name, Color.Goldenrod);
-                            ply.SendMessage("temple key     -> " + TShock.Utils.GetItemById(config.TempleKeyItem).name, Color.Goldenrod);
-                            ply.SendMessage("crimson key    -> " + TShock.Utils.GetItemById(config.CrimsonKeyItem).name, Color.Goldenrod);
-                            ply.SendMessage("frozen key     -> " + TShock.Utils.GetItemById(config.FrozenKeyItem).name, Color.Goldenrod);
-                            ply.SendMessage("hallowed key   -> " + TShock.Utils.GetItemById(config.HallowedKeyItem).name, Color.Goldenrod);
-                            ply.SendMessage("corruption key -> " + TShock.Utils.GetItemById(config.CorruptionKeyItem).name, Color.Goldenrod);
+                            ply.SendMessage("jungle key - " + string.Join(", ", jungleitems), Color.Goldenrod);
+                            ply.SendMessage("temple key - " + string.Join(", ", templeitems), Color.Goldenrod);
+                            ply.SendMessage("crimson key - " + string.Join(", ", crimsonitems), Color.Goldenrod);
+                            ply.SendMessage("frozen key - " + string.Join(", ", frozenitems), Color.Goldenrod);
+                            ply.SendMessage("hallowed key - " + string.Join(", ", halloweditems), Color.Goldenrod);
+                            ply.SendMessage("corruption key - " + string.Join(", ", corruptionitems), Color.Goldenrod);
                             break;
+                        }
+
+                    case "mode":
+                        {
+                            if (args.Parameters.Count < 2)
+                            {
+                                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key mode <normal/region/market>");
+                                break;
+                            }
+                            if (args.Parameters[1] == "normal")
+                            {
+                                config.EnableRegionExchanges = false;
+                                ply.SendSuccessMessage("Exchange mode set to normal (exchange everywhere).");
+                                break;
+                            }
+                            else if (args.Parameters[1] == "region")
+                            {
+                                config.EnableRegionExchanges = true;
+                                config.MarketMode = false;
+                                ply.SendSuccessMessage("Exchange mode set to region (a region for each type).");
+                                break;
+                            }
+                            else if (args.Parameters[1] == "market")
+                            {
+                                config.EnableRegionExchanges = true;
+                                config.MarketMode = true;
+                                ply.SendSuccessMessage("Exchange mode set to market (one region for every type).");
+                                break;
+                            }
+                            else
+                            {
+                                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key mode <normal/region/market>");
+                                break;
+                            }
                         }
                     default:
                         {
-                            ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/change/reload> [type]");
+                            ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/mode/change/reload> [type]");
                             break;
                         }
                 }
             }
             else
             {
-                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/change/reload> [type]");
+                ply.SendErrorMessage("Invalid syntax! Proper syntax: /key <help/list/mode/change/reload> [type]");
             }
         }
     }
