@@ -19,7 +19,6 @@ namespace KeyChanger
         }
         private static string savepath = TShock.SavePath;
         private static Config config;
-        //private static string[] KeyTypes = new string[] { "jungle", "temple", "crimson", "frozen", "hallowed", "corruption" };
         public static Random rand = new Random();
         //public static List<int> goldItem = new List<int>();             // |List for Gold Items
         public Region marketregion = new Region();                      // |All allowed
@@ -30,6 +29,7 @@ namespace KeyChanger
         public Region hallowedregion = new Region();                    // |Hallowed Allowed
         public Region corruptionregion = new Region();                  // |Corruption Allowed
 
+        //public static List<string> enabledkeys = new List<string>();
         public static List<string> jungleitems = new List<string>();
         public static List<string> templeitems = new List<string>();
         public static List<string> crimsonitems = new List<string>();
@@ -39,7 +39,7 @@ namespace KeyChanger
 
         public override Version Version
         {
-            get { return new Version("1.3"); }
+            get { return new Version("1.3.1"); }
         }
 
 
@@ -66,7 +66,12 @@ namespace KeyChanger
             //This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
             Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key"));
             ReadConfig();
-            IdToName();
+            IdToName(config.JungleKeyItem, "jungle", config.EnableJungleKey, jungleitems);
+            IdToName(config.TempleKeyItem, "temple", config.EnableTempleKey, templeitems);
+            IdToName(config.CrimsonKeyItem, "crimson", config.EnableCrimsonKey, crimsonitems);
+            IdToName(config.FrozenKeyItem, "frozen", config.EnableFrozenKey, frozenitems);
+            IdToName(config.HallowedKeyItem, "hallowed", config.EnableHallowedKey, halloweditems);
+            IdToName(config.CorruptionKeyItem, "corruption", config.EnableCorruptionKey, corruptionitems);
         }
 
         protected override void Dispose(bool disposing)
@@ -74,51 +79,19 @@ namespace KeyChanger
             base.Dispose(disposing);
         }
 
-        public static void IdToName()
+        // Makes up the key list
+        private static void IdToName(int[] item, string keyname, bool enable, List<string> list)
         {
-            for (int i = 0; i < config.JungleKeyItem.Length; i++)
+            for (int i = 0; i < item.Length; i++)
             {
-                if (!jungleitems.Contains(TShock.Utils.GetItemById(config.JungleKeyItem[i]).name))
+                if (enable && !list.Contains(TShock.Utils.GetItemById(item[i]).name))
                 {
-                    jungleitems.Add(TShock.Utils.GetItemById(config.JungleKeyItem[i]).name);
-                }
-            }
-            for (int i = 0; i < config.TempleKeyItem.Length; i++)
-            {
-                if (!templeitems.Contains(TShock.Utils.GetItemById(config.TempleKeyItem[i]).name))
-                {
-                    templeitems.Add(TShock.Utils.GetItemById(config.TempleKeyItem[i]).name);
-                }
-            }
-            for (int i = 0; i < config.CrimsonKeyItem.Length; i++)
-            {
-                if (!crimsonitems.Contains(TShock.Utils.GetItemById(config.CrimsonKeyItem[i]).name))
-                {
-                    crimsonitems.Add(TShock.Utils.GetItemById(config.CrimsonKeyItem[i]).name);
-                }
-            }
-            for (int i = 0; i < config.FrozenKeyItem.Length; i++)
-            {
-                if (!frozenitems.Contains(TShock.Utils.GetItemById(config.FrozenKeyItem[i]).name))
-                {
-                    frozenitems.Add(TShock.Utils.GetItemById(config.FrozenKeyItem[i]).name);
-                }
-            }
-            for (int i = 0; i < config.HallowedKeyItem.Length; i++)
-            {
-                if (!halloweditems.Contains(TShock.Utils.GetItemById(config.HallowedKeyItem[i]).name))
-                {
-                    halloweditems.Add(TShock.Utils.GetItemById(config.HallowedKeyItem[i]).name);
-                }
-            }
-            for (int i = 0; i < config.CorruptionKeyItem.Length; i++)
-            {
-                if (!corruptionitems.Contains(TShock.Utils.GetItemById(config.CorruptionKeyItem[i]).name))
-                {
-                    corruptionitems.Add(TShock.Utils.GetItemById(config.CorruptionKeyItem[i]).name);
+                    list.Add(TShock.Utils.GetItemById(item[i]).name);
+                    //enabledkeys.Add(keyname);
                 }
             }
         }
+
 
         //Config Contents
         class Config
@@ -215,7 +188,7 @@ namespace KeyChanger
             if (args.Parameters.Count == 0)
             {
                 // Plugin Info
-                ply.SendMessage("KeyChanger (v1.3) by Enerdy", Color.SkyBlue);
+                ply.SendMessage("KeyChanger (v1.3.1) by Enerdy", Color.SkyBlue);
                 ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
                 ply.SendMessage("Syntax: /key <help/list/mode/change/reload> [type]", Color.SkyBlue);
                 ply.SendMessage("Type /key help for more info", Color.SkyBlue);
@@ -764,10 +737,15 @@ namespace KeyChanger
                                 break;
                             }
 
-                            IdToName();
                             if (ReadConfig())
                             {
                                 ply.SendMessage("KeyChanger config reloaded sucessfully.", Color.Green);
+                                IdToName(config.JungleKeyItem, "jungle", config.EnableJungleKey, jungleitems);
+                                IdToName(config.TempleKeyItem, "temple", config.EnableTempleKey, templeitems);
+                                IdToName(config.CrimsonKeyItem, "crimson", config.EnableCrimsonKey, crimsonitems);
+                                IdToName(config.FrozenKeyItem, "frozen", config.EnableFrozenKey, frozenitems);
+                                IdToName(config.HallowedKeyItem, "hallowed", config.EnableHallowedKey, halloweditems);
+                                IdToName(config.CorruptionKeyItem, "corruption", config.EnableCorruptionKey, corruptionitems);
                                 break;
                             }
                             else
