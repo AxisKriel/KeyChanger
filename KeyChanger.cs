@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace KeyChanger
 {
-    [ApiVersion(1, 14)]
+    [ApiVersion(1, 15)]
     public class KeyChanger : TerrariaPlugin
     {
 
@@ -37,9 +37,10 @@ namespace KeyChanger
         public static List<string> halloweditems = new List<string>();
         public static List<string> corruptionitems = new List<string>();
 
+        public static string version = "1.4";
         public override Version Version
         {
-            get { return new Version("1.3.1"); }
+            get { return new Version("1.4"); }
         }
 
 
@@ -188,7 +189,7 @@ namespace KeyChanger
             if (args.Parameters.Count == 0)
             {
                 // Plugin Info
-                ply.SendMessage("KeyChanger (v1.3.1) by Enerdy", Color.SkyBlue);
+                ply.SendMessage(string.Format("KeyChanger (v{0}) by Enerdy", version), Color.SkyBlue);
                 ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
                 ply.SendMessage("Syntax: /key <help/list/mode/change/reload> [type]", Color.SkyBlue);
                 ply.SendMessage("Type /key help for more info", Color.SkyBlue);
