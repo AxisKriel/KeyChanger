@@ -37,10 +37,11 @@ namespace KeyChanger
         public static List<string> halloweditems = new List<string>();
         public static List<string> corruptionitems = new List<string>();
 
-        public static string version = "1.4";
+
+        Version version = new Version(1, 5);
         public override Version Version
         {
-            get { return new Version("1.4"); }
+            get { return version; }
         }
 
 
@@ -65,7 +66,12 @@ namespace KeyChanger
         public override void Initialize()
         {
             //This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
-            Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key"));
+            Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key")
+            {
+                HelpText = "Exchanges special dungeon chest keys for their correspondent items\n" +
+                           "Note: Does not return the chest\n" +
+                           "Type /key help for more info"
+            });
             ReadConfig();
             IdToName(config.JungleKeyItem, "jungle", config.EnableJungleKey, jungleitems);
             IdToName(config.TempleKeyItem, "temple", config.EnableTempleKey, templeitems);
@@ -182,7 +188,8 @@ namespace KeyChanger
             return false;
         }
 
-        private static void KeyChange(CommandArgs args)
+
+        private void KeyChange(CommandArgs args)
         {
             TSPlayer ply = args.Player;
 
@@ -191,8 +198,8 @@ namespace KeyChanger
                 // Plugin Info
                 ply.SendMessage(string.Format("KeyChanger (v{0}) by Enerdy", version), Color.SkyBlue);
                 ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
-                ply.SendMessage("Syntax: /key <help/list/mode/change/reload> [type]", Color.SkyBlue);
-                ply.SendMessage("Type /key help for more info", Color.SkyBlue);
+                ply.SendMessage("Syntax: /key <list/mode/change/reload> [type]", Color.SkyBlue);
+                ply.SendMessage("Type /help key for more info", Color.SkyBlue);
             }
             else if (args.Parameters[0].ToLower() == "change" && args.Parameters.Count == 1)
             {
@@ -758,16 +765,21 @@ namespace KeyChanger
 
                     case "help":
                         {
-                            ply.SendInfoMessage("KeyChanger Help File");
-                            ply.SendInfoMessage("/key - Shows plugin info");
-                            ply.SendInfoMessage("/key change <type> - Exchanges a key of the input type");
-                            ply.SendInfoMessage("/key list - Shows a list of available keys and items");
-                            ply.SendInfoMessage("/key mode <mode> - Changes exchange mode");
-                            ply.SendInfoMessage("/key reload - Reloads the config file");
-                            ply.SendInfoMessage("If an exchange fails, make sure your inventory has free slots");
+                            string[] helpText = new[]
+                                {
+                                    "/key - Shows plugin info",
+                                    "/key change <type> - Exchanges a key of the input type",
+                                    "/key list - Shows a list of available keys and items",
+                                    "/key mode <mode> - Changes exchange mode",
+                                    "/key reload - Reloads the config file",
+                                    "If an exchange fails, make sure your inventory has free slots"
+                                };
+                            foreach (string line in helpText)
+                            {
+                                ply.SendInfoMessage(line);
+                            }
                             break;
                         }
-
                     case "list":
                         {
                             ply.SendMessage("jungle key - " + string.Join(", ", jungleitems), Color.Goldenrod);
