@@ -38,7 +38,7 @@ namespace KeyChanger
         public static List<string> corruptionitems = new List<string>();
 
 
-        Version version = new Version(1, 5);
+        Version version = new Version(1, 6);
         public override Version Version
         {
             get { return version; }
@@ -68,7 +68,15 @@ namespace KeyChanger
             //This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
             Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key")
             {
-                HelpText = "Discontinued till further support. Type /key help for more info"
+                HelpDesc = new[]
+                                {
+                                    "/key - Shows plugin info",
+                                    "/key change <type> - Exchanges a key of the input type",
+                                    "/key list - Shows a list of available keys and items",
+                                    "/key mode <mode> - Changes exchange mode",
+                                    "/key reload - Reloads the config file",
+                                    "If an exchange fails, make sure your inventory has free slots"
+                                }
             });
             ReadConfig();
             IdToName(config.JungleKeyItem, "jungle", config.EnableJungleKey, jungleitems);
@@ -761,23 +769,6 @@ namespace KeyChanger
                             }
                         }
 
-                    case "help":
-                        {
-                            string[] helpText = new[]
-                                {
-                                    "/key - Shows plugin info",
-                                    "/key change <type> - Exchanges a key of the input type",
-                                    "/key list - Shows a list of available keys and items",
-                                    "/key mode <mode> - Changes exchange mode",
-                                    "/key reload - Reloads the config file",
-                                    "If an exchange fails, make sure your inventory has free slots"
-                                };
-                            foreach (string line in helpText)
-                            {
-                                ply.SendInfoMessage(line);
-                            }
-                            break;
-                        }
                     case "list":
                         {
                             ply.SendMessage("jungle key - " + string.Join(", ", jungleitems), Color.Goldenrod);
