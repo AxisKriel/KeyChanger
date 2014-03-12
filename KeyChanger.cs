@@ -68,9 +68,7 @@ namespace KeyChanger
             //This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
             Commands.ChatCommands.Add(new Command("key.change", KeyChange, "key")
             {
-                HelpText = "Exchanges special dungeon chest keys for their correspondent items\n" +
-                           "Note: Does not return the chest\n" +
-                           "Type /key help for more info"
+                HelpText = "Discontinued till further support. Type /key help for more info"
             });
             ReadConfig();
             IdToName(config.JungleKeyItem, "jungle", config.EnableJungleKey, jungleitems);
@@ -285,9 +283,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
@@ -370,9 +368,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
@@ -455,9 +453,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
@@ -540,9 +538,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
@@ -625,9 +623,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
@@ -710,9 +708,9 @@ namespace KeyChanger
                                 {
                                     if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
                                     {
-                                        ply.SaveServerCharacter();
-                                        ply.PlayerData.inventory[i].stack -= 1;
-                                        ply.SendServerCharacter();
+                                        ply.TPlayer.inventory[i].stack -= 1;
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, "", args.Player.Index, i);
+                                        NetMessage.SendData((int)PacketTypes.PlayerSlot, args.Player.Index, -1, "", args.Player.Index, i);
                                         ply.GiveItem(keyItem, "", 0, 0, 1);
                                         keyGiven = true;
                                         break;
