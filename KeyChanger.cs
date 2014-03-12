@@ -28,6 +28,7 @@ namespace KeyChanger
         public Region frozenregion = new Region();                      // |Frozen Allowed
         public Region hallowedregion = new Region();                    // |Hallowed Allowed
         public Region corruptionregion = new Region();                  // |Corruption Allowed
+        public Region shadowregion = new Region();                      // |Shadow Allowed
 
         //public static List<string> enabledkeys = new List<string>();
         public static List<string> jungleitems = new List<string>();
@@ -36,6 +37,7 @@ namespace KeyChanger
         public static List<string> frozenitems = new List<string>();
         public static List<string> halloweditems = new List<string>();
         public static List<string> corruptionitems = new List<string>();
+        public static List<string> shadowitems = new List<string>();
 
 
         Version version = new Version(1, 5);
@@ -79,6 +81,7 @@ namespace KeyChanger
             IdToName(config.FrozenKeyItem, "frozen", config.EnableFrozenKey, frozenitems);
             IdToName(config.HallowedKeyItem, "hallowed", config.EnableHallowedKey, halloweditems);
             IdToName(config.CorruptionKeyItem, "corruption", config.EnableCorruptionKey, corruptionitems);
+            IdToName(config.ShadowKeyItem, "shadow", config.EnableShadowKey, shadowitems);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,6 +115,7 @@ namespace KeyChanger
             public bool EnableCrimsonKey = true;
             public bool EnableHallowedKey = true;
             public bool EnableCorruptionKey = true;
+            public bool EnableShadowKey = true;
  
             public int[] JungleKeyItem = new int[] { 1156 };                // |Piranha Gun
             public int[] TempleKeyItem = new int[] { 1293 };                // |Lihzahrd Power Cell
@@ -119,6 +123,7 @@ namespace KeyChanger
             public int[] CrimsonKeyItem = new int[] { 1569 };               // |Vampire Knifes
             public int[] HallowedKeyItem = new int[] { 1260 };              // |Rainbow Gun
             public int[] CorruptionKeyItem = new int[] { 1571 };            // |Scourge of the Corruptor
+            public int[] ShadowKeyItem = new int[] { 218 };
 
             // Those are optional; They're only needed if EnableRegionExchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
             public string MarketRegion = null;
@@ -128,6 +133,7 @@ namespace KeyChanger
             public string FrozenRegion = null;
             public string HallowedRegion = null;
             public string CorruptionRegion = null;
+            public string ShadowRegion = null;
             
         }
 
@@ -730,6 +736,91 @@ namespace KeyChanger
                                 }
                             }
                             #endregion
+                            #region Shadow
+                            else if (keyType == "shadow")
+                            {
+                                keyItem = config.ShadowKeyItem[rand.Next(0, config.ShadowKeyItem.Length)];
+                                keyID = 329;
+                                itemName = TShock.Utils.GetItemById(keyItem).name;
+
+                                if (!config.EnableShadowKey)
+                                {
+                                    ply.SendErrorMessage("This key type is disabled.");
+                                    break;
+                                }
+
+                                #region EnableRegionExchanges
+                                if (config.EnableRegionExchanges)
+                                {
+                                    if (config.MarketMode)
+                                    {
+                                        if (config.MarketRegion != null)
+                                        {
+                                            Region marketregion = TShock.Regions.GetRegionByName(config.MarketRegion);
+                                            if (ply.TileX >= marketregion.Area.X && ply.TileX <= marketregion.Area.X + marketregion.Area.Width && ply.TileY >= marketregion.Area.Y && ply.TileY <= marketregion.Area.Y + marketregion.Area.Height)
+                                            {
+                                                // Keep running the code
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.MarketRegion == null)
+                                        {
+                                            ply.SendErrorMessage("KeyChanger is disabled because Market Mode is enabled but the required region doesn't exist.");
+                                            break;
+                                        }
+                                    }
+                                    else if (!config.MarketMode)
+                                    {
+                                        if (config.ShadowRegion != null)
+                                        {
+                                            Region shadowregion = TShock.Regions.GetRegionByName(config.ShadowRegion);
+                                            if (ply.TileX >= shadowregion.Area.X && ply.TileX <= shadowregion.Area.X + shadowregion.Area.Width && ply.TileY >= shadowregion.Area.Y && ply.TileY <= shadowregion.Area.Y + shadowregion.Area.Height)
+                                            {
+                                                // Keep running the code 
+                                            }
+                                            else
+                                            {
+                                                ply.SendErrorMessage("You're not inside the required region!");
+                                                break;
+                                            }
+                                        }
+                                        else if (config.ShadowRegion == null)
+                                        {
+                                            ply.SendErrorMessage("This key type is disabled because the required region doesn't exist.");
+                                            break;
+                                        }
+                                    }
+                                }
+                                #endregion
+
+                                for (int i = 0; i < 50; i++)
+                                {
+                                    if (ply.InventorySlotAvailable && args.TPlayer.inventory[i].netID == keyID)
+                                    {
+                                        ply.SaveServerCharacter();
+                                        ply.PlayerData.inventory[i].stack -= 1;
+                                        ply.SendServerCharacter();
+                                        ply.GiveItem(keyItem, "", 0, 0, 1);
+                                        keyGiven = true;
+                                        break;
+                                    }
+                                }
+                                if (keyGiven)
+                                {
+                                    ply.SendSuccessMessage("Exchanged 1 " + itemName + "(s)!");
+                                    break;
+                                }
+                                else
+                                {
+                                    ply.SendErrorMessage("Exchange failed: Key not found / No free slots");
+                                    break;
+                                }
+                            }
+                            #endregion
                             else
                             {
                                 ply.SendErrorMessage("Invalid syntax! Proper syntax: /key change <type>");
@@ -754,6 +845,7 @@ namespace KeyChanger
                                 IdToName(config.FrozenKeyItem, "frozen", config.EnableFrozenKey, frozenitems);
                                 IdToName(config.HallowedKeyItem, "hallowed", config.EnableHallowedKey, halloweditems);
                                 IdToName(config.CorruptionKeyItem, "corruption", config.EnableCorruptionKey, corruptionitems);
+                                IdToName(config.ShadowKeyItem, "shadow", config.EnableShadowKey, shadowitems);
                                 break;
                             }
                             else
@@ -788,6 +880,7 @@ namespace KeyChanger
                             ply.SendMessage("frozen key - " + string.Join(", ", frozenitems), Color.Goldenrod);
                             ply.SendMessage("hallowed key - " + string.Join(", ", halloweditems), Color.Goldenrod);
                             ply.SendMessage("corruption key - " + string.Join(", ", corruptionitems), Color.Goldenrod);
+                            ply.SendMessage("shadow key - " + string.Join(", ", shadowitems), Color.Goldenrod);
                             break;
                         }
 
