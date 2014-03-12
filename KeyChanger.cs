@@ -123,7 +123,7 @@ namespace KeyChanger
             public int[] CrimsonKeyItem = new int[] { 1569 };               // |Vampire Knifes
             public int[] HallowedKeyItem = new int[] { 1260 };              // |Rainbow Gun
             public int[] CorruptionKeyItem = new int[] { 1571 };            // |Scourge of the Corruptor
-            public int[] ShadowKeyItem = new int[] { 218 };
+            public int[] ShadowKeyItem = new int[] { 218 };                 // |Flamelash
 
             // Those are optional; They're only needed if EnableRegionExchanges is set to true. Default is set to null, so that players can be informed of non-existing regions.
             public string MarketRegion = null;
