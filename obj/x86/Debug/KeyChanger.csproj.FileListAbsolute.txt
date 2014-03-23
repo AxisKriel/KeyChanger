@@ -1,0 +1,8 @@
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\bin\Release\KeyChanger.dll
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\bin\Release\KeyChanger.pdb
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\bin\Release\Newtonsoft.Json.dll
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\bin\Release\TerrariaServer.exe
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\bin\Release\TShockAPI.dll
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\obj\x86\Debug\KeyChanger.csprojResolveAssemblyReference.cache
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\obj\x86\Debug\KeyChanger.dll
+C:\Users\Alex.JamesHomeE6410\Documents\GitHub\KeyChanger\obj\x86\Debug\KeyChanger.pdb
