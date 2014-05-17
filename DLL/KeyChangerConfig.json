@@ -1,0 +1,35 @@
+{
+  "EnableRegionExchanges": false,
+  "MarketMode": false,
+  "EnableTempleKey": true,
+  "EnableJungleKey": true,
+  "EnableCorruptionKey": true,
+  "EnableCrimsonKey": true,
+  "EnableHallowedKey": true,
+  "EnableFrozenKey": true,
+  "TempleKeyItem": [
+    1293
+  ],
+  "JungleKeyItem": [
+    1156
+  ],
+  "CorruptionKeyItem": [
+    1571
+  ],
+  "CrimsonKeyItem": [
+    1569
+  ],
+  "HallowedKeyItem": [
+    1260
+  ],
+  "FrozenKeyItem": [
+    1572
+  ],
+  "MarketRegion": null,
+  "TempleRegion": null,
+  "JungleRegion": null,
+  "CorruptionRegion": null,
+  "CrimsonRegion": null,
+  "HallowedRegion": null,
+  "FrozenRegion": null
+}
