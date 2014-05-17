@@ -22,6 +22,7 @@ namespace KeyChanger
 			Key.Crimson = LoadKey(KeyTypes.Crimson, TShock.Regions.GetRegionByName(Config.contents.CrimsonRegion));
 			Key.Hallowed = LoadKey(KeyTypes.Hallowed, TShock.Regions.GetRegionByName(Config.contents.HallowedRegion));
 			Key.Frozen = LoadKey(KeyTypes.Frozen, TShock.Regions.GetRegionByName(Config.contents.FrozenRegion));
+            Key.Shadow = LoadKey(KeyTypes.Shadow, TShock.Regions.GetRegionByName(Config.contents.ShadowRegion));
 		}
 		#endregion
 
@@ -66,6 +67,11 @@ namespace KeyChanger
 					key.Items = GetItems(Config.contents.FrozenKeyItem);
 					key.Region = TShock.Regions.GetRegionByName(Config.contents.FrozenRegion);
 					break;
+                case KeyTypes.Shadow:
+                    key = new Key("shadow", KeyTypes.Shadow, Config.contents.EnableShadowKey);
+                    key.Items = GetItems(Config.contents.ShadowKeyItem);
+                    key.Region = TShock.Regions.GetRegionByName(Config.contents.ShadowRegion);
+                    break;
 				default:
 					return null;
 			}
