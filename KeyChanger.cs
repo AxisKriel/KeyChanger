@@ -18,6 +18,10 @@ namespace KeyChanger
 			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
 		}
 
+		public override string UpdateURL
+		{
+			get { return "https://dl.dropboxusercontent.com/u/31979270/tshockplugins/keychanger-update.json?raw=true"; }
+		}
 
 		public override string Name
 		{
@@ -78,7 +82,7 @@ namespace KeyChanger
 			TSPlayer ply = args.Player;
 
 			// SSC check to alert users
-			if (!TShock.Config.ServerSideCharacter)
+			if (!Main.ServerSideCharacter)
 			{
 				ply.SendWarningMessage("[Warning] This plugin will not work properly with ServerSideCharacters disabled.");
 			}
@@ -173,11 +177,7 @@ namespace KeyChanger
 							}
 
 							// Checks if the player is inside the region
-							int MinX = region.Area.X;
-							int MinY = region.Area.Y;
-							int MaxX = region.Area.X + region.Area.Width;
-							int MaxY = region.Area.Y + region.Area.Height;
-							if (ply.TileX < MinX || ply.TileX > MaxX || ply.TileY < MinY || ply.TileY > MaxY)
+							if (!region.Area.Contains(ply.TileX, ply.TileY))
 							{
 								ply.SendErrorMessage("You are not in a valid region to make this exchange.");
 								return;
