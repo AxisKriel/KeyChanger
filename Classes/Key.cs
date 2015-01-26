@@ -28,6 +28,6 @@ namespace KeyChanger
 		public static Key Corruption = new Key("corruption", KeyTypes.Corruption, Config.contents.EnableCorruptionKey);
 		public static Key Crimson = new Key("crimson", KeyTypes.Crimson, Config.contents.EnableCrimsonKey);
 		public static Key Hallowed = new Key("hallowed", KeyTypes.Hallowed, Config.contents.EnableHallowedKey);
-		public static Key Frozen = new Key("frozen", KeyTypes.Frozen, Config.contents.EnableHallowedKey);
+		public static Key Frozen = new Key("frozen", KeyTypes.Frozen, Config.contents.EnableFrozenKey);
 	}
 }
