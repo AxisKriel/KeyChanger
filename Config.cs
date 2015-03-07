@@ -64,7 +64,7 @@ namespace KeyChanger
 			}
 			catch (Exception ex)
 			{
-				Log.ConsoleError(ex.Message);
+				TShock.Log.ConsoleError(ex.Message);
 				contents = new Contents();
 			}
 		}
@@ -92,13 +92,13 @@ namespace KeyChanger
 				else
 				{
 					CreateConfig();
-					Log.ConsoleInfo("Created KeyChangerConfig.json.");
+					TShock.Log.ConsoleInfo("Created KeyChangerConfig.json.");
 					return true;
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.ConsoleError(ex.Message);
+				TShock.Log.ConsoleError(ex.Message);
 			}
 			return false;
 		}
@@ -122,7 +122,7 @@ namespace KeyChanger
 			}
 			catch (Exception ex)
 			{
-				Log.ConsoleError(ex.Message);
+				TShock.Log.ConsoleError(ex.Message);
 				return false;
 			}
 		}

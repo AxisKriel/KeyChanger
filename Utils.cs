@@ -107,8 +107,8 @@ namespace KeyChanger
 				"list"
 			};
 
-			string valid = string.Join("/", list.Where(i => i != null));
-			error = string.Format("Invalid syntax! Proper syntax: /key <{0}> [type]", valid);
+			string valid = string.Join("/", list.FindAll(i => i != null));
+			error = string.Format("Invalid syntax! Proper syntax: {0}key <{1}> [type]", Commands.Specifier, valid);
 			return error;
 		}
 		#endregion

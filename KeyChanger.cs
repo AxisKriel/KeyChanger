@@ -9,7 +9,7 @@ using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 16)]
+	[ApiVersion(1, 17)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		#region Plugin Info
@@ -55,24 +55,24 @@ namespace KeyChanger
 			{
 				HelpDesc = new[]
 				{
-					"/key - Shows plugin info",
-					"/key change <type> - Exchanges a key of the input type",
-					"/key list - Shows a list of available keys and items",
-					"/key mode <mode> - Changes exchange mode",
-					"/key reload - Reloads the config file",
+					"{0}key - Shows plugin info".SFormat(Commands.Specifier),
+					"{0}key change <type> - Exchanges a key of the input type".SFormat(Commands.Specifier),
+					"{0}key list - Shows a list of available keys and items".SFormat(Commands.Specifier),
+					"{0}key mode <mode> - Changes exchange mode".SFormat(Commands.Specifier),
+					"{0}key reload - Reloads the config file".SFormat(Commands.Specifier),
 					"If an exchange fails, make sure your inventory has free slots"
 				}
 			});
 			if (!Config.ReadConfig())
 			{
-				Log.ConsoleError("Failed to read KeyChangerConfig.json. Consider deleting the file so that it may be recreated.");
+				TShock.Log.ConsoleError("Failed to read KeyChangerConfig.json. Consider deleting the file so that it may be recreated.");
 			}
 			Utils.InitKeys();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
-			base.Dispose(disposing);
+			
 		}
 		#endregion
 
@@ -93,12 +93,12 @@ namespace KeyChanger
 				var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 				ply.SendMessage(string.Format("KeyChanger (v{0}) by Enerdy", version), Color.SkyBlue);
 				ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
-				ply.SendMessage("Syntax: /key <list/mode/change/reload> [type]", Color.SkyBlue);
-				ply.SendMessage("Type /help key for more info", Color.SkyBlue);
+				ply.SendMessage("Syntax: {0}key <list/mode/change/reload> [type]".SFormat(Commands.Specifier), Color.SkyBlue);
+				ply.SendMessage("Type {0}help key for more info".SFormat(Commands.Specifier), Color.SkyBlue);
 			}
 			else if (args.Parameters[0].ToLower() == "change" && args.Parameters.Count == 1)
 			{
-				ply.SendErrorMessage("Invalid syntax! Proper syntax: /key change <type>");
+				ply.SendErrorMessage("Invalid syntax! Proper syntax: {0}key change <type>", Commands.Specifier);
 			}
 			else if (args.Parameters.Count > 0)
 			{
@@ -177,7 +177,7 @@ namespace KeyChanger
 							}
 
 							// Checks if the player is inside the region
-							if (!region.Area.Contains(ply.TileX, ply.TileY))
+							if (args.Player.CurrentRegion != region)
 							{
 								ply.SendErrorMessage("You are not in a valid region to make this exchange.");
 								return;
@@ -252,7 +252,7 @@ namespace KeyChanger
 
 							if (args.Parameters.Count < 2)
 							{
-								ply.SendErrorMessage("Invalid syntax! Proper syntax: /key mode <normal/region/market>");
+								ply.SendErrorMessage("Invalid syntax! Proper syntax: {0}key mode <normal/region/market>", Commands.Specifier);
 								break;
 							}
 
@@ -277,7 +277,7 @@ namespace KeyChanger
 							}
 							else
 							{
-								ply.SendErrorMessage("Invalid syntax! Proper syntax: /key mode <normal/region/market>");
+								ply.SendErrorMessage("Invalid syntax! Proper syntax: {0}key mode <normal/region/market>", Commands.Specifier);
 								return;
 							}
 							Config.UpdateConfig();

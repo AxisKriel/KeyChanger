@@ -38,22 +38,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Refs\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="TerrariaServer">
-      <HintPath>Refs\TerrariaServer.exe</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="TShockAPI">
-      <HintPath>Refs\TShockAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Key.cs" />
@@ -62,6 +54,16 @@
     <Compile Include="KeyChanger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="TShock\TerrariaServerAPI\TerrariaAPI-Server.csproj">
+      <Project>{549a7941-d9c9-4544-bac8-d9eeeab4d777}</Project>
+      <Name>TerrariaAPI-Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="TShock\TShockAPI\TShockAPI.csproj">
+      <Project>{49606449-072b-4cf5-8088-aa49da586694}</Project>
+      <Name>TShockAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
