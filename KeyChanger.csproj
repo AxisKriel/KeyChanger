@@ -56,7 +56,7 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="TShock\TerrariaServerAPI\TerrariaAPI-Server.csproj">
+    <ProjectReference Include="TerrariaAPI-Server\TerrariaAPI-Server.csproj">
       <Project>{549a7941-d9c9-4544-bac8-d9eeeab4d777}</Project>
       <Name>TerrariaAPI-Server</Name>
     </ProjectReference>

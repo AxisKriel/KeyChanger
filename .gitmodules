@@ -1,0 +1,6 @@
+[submodule "TShock"]
+	path = TShock
+	url = https://github.com/NyxStudios/TShock
+[submodule "TerrariaAPI-Server"]
+	path = TerrariaAPI-Server
+	url = https://github.com/Deathmax/TerrariaAPI-Server
