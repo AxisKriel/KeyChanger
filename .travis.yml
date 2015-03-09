@@ -3,5 +3,5 @@ solution: KeyChanger.sln
 script:
   - cd TShock
   - git submodule init
-  - cd
+  - cd -
   - xbuild /p:Configuration=Release KeyChanger.sln
