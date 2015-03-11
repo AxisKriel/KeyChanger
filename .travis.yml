@@ -1,7 +1,2 @@
 language: csharp
-solution: KeyChanger.sln
-script:
-  - cd TShock
-  - git submodule update --init
-  - cd ..
-  - xbuild /p:Configuration=Release KeyChanger.sln
+solution: KeyChanger.cspoj
