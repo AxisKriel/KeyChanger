@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using TShockAPI;
 using Newtonsoft.Json;
+using TShockAPI;
 
 namespace KeyChanger
 {
@@ -16,9 +13,9 @@ namespace KeyChanger
 		#region Contents
 		public class Contents
 		{
-			public bool EnableRegionExchanges = false;                      // |Default set to false
-			public bool MarketMode = false;                                 // |Use only a general market region
-			//public bool EnableGoldKey = true;                             // |Gold Key works similar to a currency
+			public bool EnableRegionExchanges = false;						// |Default set to false
+			public bool MarketMode = false;									// |Use only a general market region
+			//public bool EnableGoldKey = true;								// |Gold Key works similar to a currency
 			public bool EnableTempleKey = true;
 			public bool EnableJungleKey = true;
 			public bool EnableCorruptionKey = true;
@@ -26,12 +23,12 @@ namespace KeyChanger
 			public bool EnableHallowedKey = true;
 			public bool EnableFrozenKey = true;
 
-			public int[] TempleKeyItem = new int[] { 1293 };                // |Lihzahrd Power Cell
-			public int[] JungleKeyItem = new int[] { 1156 };                // |Piranha Gun
-			public int[] CorruptionKeyItem = new int[] { 1571 };            // |Scourge of the Corruptor
-			public int[] CrimsonKeyItem = new int[] { 1569 };               // |Vampire Knifes
-			public int[] HallowedKeyItem = new int[] { 1260 };              // |Rainbow Gun
-			public int[] FrozenKeyItem = new int[] { 1572 };                // |Frost Hydra Staff
+			public int[] TempleKeyItem = new int[] { 1293 };				// |Lihzahrd Power Cell
+			public int[] JungleKeyItem = new int[] { 1156 };				// |Piranha Gun
+			public int[] CorruptionKeyItem = new int[] { 1571 };			// |Scourge of the Corruptor
+			public int[] CrimsonKeyItem = new int[] { 1569 };				// |Vampire Knifes
+			public int[] HallowedKeyItem = new int[] { 1260 };				// |Rainbow Gun
+			public int[] FrozenKeyItem = new int[] { 1572 };				// |Frost Hydra Staff
 
 			// Those are optional; They're only needed if EnableRegionExchanges is set to true. Default is set to null,
 			// so that players can be informed of non-existing regions.

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -9,18 +8,18 @@ using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 17)]
+	[ApiVersion(1, 21)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		#region Plugin Info
-		public override Version Version
+		public override string Author
 		{
-			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
+			get { return "Enerdy"; }
 		}
 
-		public override string UpdateURL
+		public override string Description
 		{
-			get { return "https://dl.dropboxusercontent.com/u/31979270/tshockplugins/keychanger-update.json?raw=true"; }
+			get { return "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items."; }
 		}
 
 		public override string Name
@@ -28,18 +27,10 @@ namespace KeyChanger
 			get { return "KeyChanger"; }
 		}
 
-
-		public override string Author
+		public override Version Version
 		{
-			get { return "Enerdy"; }
+			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
 		}
-
-
-		public override string Description
-		{
-			get { return "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items"; }
-		}
-
 
 		public KeyChanger(Main game)
 			: base(game)
@@ -55,11 +46,11 @@ namespace KeyChanger
 			{
 				HelpDesc = new[]
 				{
-					"{0}key - Shows plugin info".SFormat(Commands.Specifier),
-					"{0}key change <type> - Exchanges a key of the input type".SFormat(Commands.Specifier),
-					"{0}key list - Shows a list of available keys and items".SFormat(Commands.Specifier),
-					"{0}key mode <mode> - Changes exchange mode".SFormat(Commands.Specifier),
-					"{0}key reload - Reloads the config file".SFormat(Commands.Specifier),
+					$"{Commands.Specifier}key - Shows plugin info",
+					$"{Commands.Specifier}key change <type> - Exchanges a key of the input type",
+					$"{Commands.Specifier}key list - Shows a list of available keys and items",
+					$"{Commands.Specifier}key mode <mode> - Changes exchange mode",
+					$"{Commands.Specifier}key reload - Reloads the config file",
 					"If an exchange fails, make sure your inventory has free slots"
 				}
 			});
@@ -91,10 +82,10 @@ namespace KeyChanger
 			{
 				// Plugin Info
 				var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-				ply.SendMessage(string.Format("KeyChanger (v{0}) by Enerdy", version), Color.SkyBlue);
+				ply.SendMessage($"KeyChanger (v{version}) by Enerdy", Color.SkyBlue);
 				ply.SendMessage("Description: Changes special chest keys into their specific items", Color.SkyBlue);
-				ply.SendMessage("Syntax: {0}key <list/mode/change/reload> [type]".SFormat(Commands.Specifier), Color.SkyBlue);
-				ply.SendMessage("Type {0}help key for more info".SFormat(Commands.Specifier), Color.SkyBlue);
+				ply.SendMessage($"Syntax: {Commands.Specifier}key <list/mode/change/reload> [type]", Color.SkyBlue);
+				ply.SendMessage($"Type {Commands.Specifier}help key for more info", Color.SkyBlue);
 			}
 			else if (args.Parameters[0].ToLower() == "change" && args.Parameters.Count == 1)
 			{
@@ -136,7 +127,7 @@ namespace KeyChanger
 							key = Key.Frozen;
 						else
 						{
-							ply.SendErrorMessage("Invalid key type! Available types: " + string.Join(", ",
+							ply.SendErrorMessage("Invalid key type! Available types: " + String.Join(", ",
 								Key.Temple.Enabled ? Key.Temple.Name : null,
 								Key.Jungle.Enabled ? Key.Jungle.Name : null,
 								Key.Corruption.Enabled ? Key.Corruption.Name : null,
@@ -195,7 +186,7 @@ namespace KeyChanger
 								if (item.stack == 1 || ply.InventorySlotAvailable)
 								{
 									ply.TPlayer.inventory[i].stack--;
-									NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, string.Empty, ply.Index, i);
+									NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, String.Empty, ply.Index, i);
 									Random rand = new Random();
 									Item give = key.Items[rand.Next(0, key.Items.Count)];
 									ply.GiveItem(give.netID, give.name, give.width, give.height, 1);
@@ -233,12 +224,12 @@ namespace KeyChanger
 
 					case "list":
 						{
-							ply.SendMessage("Temple Key - " + string.Join(", ", Key.Temple.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Jungle Key - " + string.Join(", ", Key.Jungle.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Corruption Key - " + string.Join(", ", Key.Corruption.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Crimson Key - " + string.Join(", ", Key.Crimson.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Hallowed Key - " + string.Join(", ", Key.Hallowed.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Frozen Key - " + string.Join(", ", Key.Frozen.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Temple Key - " + String.Join(", ", Key.Temple.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Jungle Key - " + String.Join(", ", Key.Jungle.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Corruption Key - " + String.Join(", ", Key.Corruption.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Crimson Key - " + String.Join(", ", Key.Crimson.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Hallowed Key - " + String.Join(", ", Key.Hallowed.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Frozen Key - " + String.Join(", ", Key.Frozen.Items.Select(i => i.name)), Color.Goldenrod);
 							break;
 						}
 

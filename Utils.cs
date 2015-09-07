@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Terraria;
 using TShockAPI;
 using TShockAPI.DB;
-using Terraria;
 
 namespace KeyChanger
 {
@@ -107,8 +105,8 @@ namespace KeyChanger
 				"list"
 			};
 
-			string valid = string.Join("/", list.FindAll(i => i != null));
-			error = string.Format("Invalid syntax! Proper syntax: {0}key <{1}> [type]", Commands.Specifier, valid);
+			string valid = String.Join("/", list.FindAll(i => i != null));
+			error = String.Format("Invalid syntax! Proper syntax: {0}key <{1}> [type]", Commands.Specifier, valid);
 			return error;
 		}
 		#endregion
