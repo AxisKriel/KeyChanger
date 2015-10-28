@@ -8,7 +8,7 @@ using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 21)]
+	[ApiVersion(1, 22)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		#region Plugin Info
