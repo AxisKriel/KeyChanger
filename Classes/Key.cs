@@ -12,19 +12,19 @@ namespace KeyChanger
 
 		public Key(string name, KeyTypes type, bool enabled)
 		{
-			this.Name = name;
-			this.Type = type;
-			this.Enabled = enabled;
+			Name = name;
+			Type = type;
+			Enabled = enabled;
 
-			this.Region = null;
-			this.Items = new List<Terraria.Item>();
+			Region = null;
+			Items = new List<Terraria.Item>();
 		}
 
-		public static Key Temple = new Key("temple", KeyTypes.Temple, Config.contents.EnableTempleKey);
-		public static Key Jungle = new Key("jungle", KeyTypes.Jungle, Config.contents.EnableJungleKey);
-		public static Key Corruption = new Key("corruption", KeyTypes.Corruption, Config.contents.EnableCorruptionKey);
-		public static Key Crimson = new Key("crimson", KeyTypes.Crimson, Config.contents.EnableCrimsonKey);
-		public static Key Hallowed = new Key("hallowed", KeyTypes.Hallowed, Config.contents.EnableHallowedKey);
-		public static Key Frozen = new Key("frozen", KeyTypes.Frozen, Config.contents.EnableFrozenKey);
+		public static Key Temple = new Key("temple", KeyTypes.Temple, KeyChanger.Config.EnableTempleKey);
+		public static Key Jungle = new Key("jungle", KeyTypes.Jungle, KeyChanger.Config.EnableJungleKey);
+		public static Key Corruption = new Key("corruption", KeyTypes.Corruption, KeyChanger.Config.EnableCorruptionKey);
+		public static Key Crimson = new Key("crimson", KeyTypes.Crimson, KeyChanger.Config.EnableCrimsonKey);
+		public static Key Hallowed = new Key("hallowed", KeyTypes.Hallowed, KeyChanger.Config.EnableHallowedKey);
+		public static Key Frozen = new Key("frozen", KeyTypes.Frozen, KeyChanger.Config.EnableFrozenKey);
 	}
 }

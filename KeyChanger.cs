@@ -11,63 +11,52 @@ namespace KeyChanger
 	[ApiVersion(1, 23)]
 	public class KeyChanger : TerrariaPlugin
 	{
-		#region Plugin Info
-		public override string Author
+		public override string Author => "Enerdy";
+
+		public static Config Config { get; private set; }
+
+		public override string Description => "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items.";
+
+		public override string Name => "KeyChanger";
+
+		public override Version Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+
+		public KeyChanger(Main game) : base(game) { }
+
+		protected override void Dispose(bool disposing)
 		{
-			get { return "Enerdy"; }
+			if (disposing)
+			{
+				ServerApi.Hooks.GameInitialize.Deregister(this, onInitialize);
+			}
 		}
 
-		public override string Description
-		{
-			get { return "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items."; }
-		}
-
-		public override string Name
-		{
-			get { return "KeyChanger"; }
-		}
-
-		public override Version Version
-		{
-			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
-		}
-
-		public KeyChanger(Main game)
-			: base(game)
-		{
-		}
-		#endregion
-
-		#region Initialize & Dispose
 		public override void Initialize()
 		{
+			ServerApi.Hooks.GameInitialize.Register(this, onInitialize);
+		}
+
+		private void onInitialize(EventArgs e)
+		{
+			Config = Config.Read();
+
 			//This is the main command, which branches to everything the plugin can do, by checking the first parameter a player inputs
 			Commands.ChatCommands.Add(new Command(new List<string>() { "key.change", "key.reload", "key.mode" }, KeyChange, "key")
 			{
 				HelpDesc = new[]
 				{
-					$"{Commands.Specifier}key - Shows plugin info",
-					$"{Commands.Specifier}key change <type> - Exchanges a key of the input type",
-					$"{Commands.Specifier}key list - Shows a list of available keys and items",
-					$"{Commands.Specifier}key mode <mode> - Changes exchange mode",
-					$"{Commands.Specifier}key reload - Reloads the config file",
-					"If an exchange fails, make sure your inventory has free slots"
+					$"{Commands.Specifier}key - Shows plugin info.",
+					$"{Commands.Specifier}key change <type> - Exchanges a key of the input type.",
+					$"{Commands.Specifier}key list - Shows a list of available keys and items.",
+					$"{Commands.Specifier}key mode <mode> - Changes exchange mode.",
+					$"{Commands.Specifier}key reload - Reloads the config file.",
+					"If an exchange fails, make sure your inventory has free slots."
 				}
 			});
-			if (!Config.ReadConfig())
-			{
-				TShock.Log.ConsoleError("Failed to read KeyChangerConfig.json. Consider deleting the file so that it may be recreated.");
-			}
+
 			Utils.InitKeys();
 		}
 
-		protected override void Dispose(bool disposing)
-		{
-			
-		}
-		#endregion
-
-		#region KeyChange
 		private void KeyChange(CommandArgs args)
 		{
 			TSPlayer ply = args.Player;
@@ -152,11 +141,11 @@ namespace KeyChanger
 							return;
 						}
 
-						if (Config.contents.EnableRegionExchanges)
+						if (Config.EnableRegionExchanges)
 						{
 							Region region;
-							if (Config.contents.MarketMode)
-								region = TShock.Regions.GetRegionByName(Config.contents.MarketRegion);
+							if (Config.MarketMode)
+								region = TShock.Regions.GetRegionByName(Config.MarketRegion);
 							else
 								region = key.Region;
 
@@ -209,17 +198,10 @@ namespace KeyChanger
 								break;
 							}
 
-							if (Config.ReadConfig())
-							{
-								Utils.InitKeys();
-								ply.SendMessage("KeyChangerConfig.json reloaded successfully.", Color.Green);
-								break;
-							}
-							else
-							{
-								ply.SendErrorMessage("Failed to read KeyChangerConfig.json. Consider deleting the file so that it may be recreated.");
-								break;
-							}
+							Config = Config.Read();
+							Utils.InitKeys();
+							ply.SendSuccessMessage("KeyChangerConfig.json reloaded successfully.");
+							break;
 						}
 
 					case "list":
@@ -251,19 +233,19 @@ namespace KeyChanger
 
 							if (query == "normal")
 							{
-								Config.contents.EnableRegionExchanges = false;
+								Config.EnableRegionExchanges = false;
 								ply.SendSuccessMessage("Exchange mode set to normal (exchange everywhere).");
 							}
 							else if (query == "region")
 							{
-								Config.contents.EnableRegionExchanges = true;
-								Config.contents.MarketMode = false;
+								Config.EnableRegionExchanges = true;
+								Config.MarketMode = false;
 								ply.SendSuccessMessage("Exchange mode set to region (a region for each type).");
 							}
 							else if (query == "market")
 							{
-								Config.contents.EnableRegionExchanges = true;
-								Config.contents.MarketMode = true;
+								Config.EnableRegionExchanges = true;
+								Config.MarketMode = true;
 								ply.SendSuccessMessage("Exchange mode set to market (one region for every type).");
 							}
 							else
@@ -271,7 +253,7 @@ namespace KeyChanger
 								ply.SendErrorMessage("Invalid syntax! Proper syntax: {0}key mode <normal/region/market>", Commands.Specifier);
 								return;
 							}
-							Config.UpdateConfig();
+							Config.Write();
 							break;
 						}
 					default:
@@ -286,6 +268,5 @@ namespace KeyChanger
 				ply.SendErrorMessage(Utils.ErrorMessage(ply));
 			}
 		}
-		#endregion
 	}
 }

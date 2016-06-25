@@ -8,22 +8,19 @@ namespace KeyChanger
 {
 	class Utils
 	{
-		#region InitKeys
 		/// <summary>
 		/// Loads all keys.
 		/// </summary>
 		public static void InitKeys()
 		{
-			Key.Temple = LoadKey(KeyTypes.Temple, TShock.Regions.GetRegionByName(Config.contents.TempleRegion));
-			Key.Jungle = LoadKey(KeyTypes.Jungle, TShock.Regions.GetRegionByName(Config.contents.JungleRegion));
-			Key.Corruption = LoadKey(KeyTypes.Corruption, TShock.Regions.GetRegionByName(Config.contents.CorruptionRegion));
-			Key.Crimson = LoadKey(KeyTypes.Crimson, TShock.Regions.GetRegionByName(Config.contents.CrimsonRegion));
-			Key.Hallowed = LoadKey(KeyTypes.Hallowed, TShock.Regions.GetRegionByName(Config.contents.HallowedRegion));
-			Key.Frozen = LoadKey(KeyTypes.Frozen, TShock.Regions.GetRegionByName(Config.contents.FrozenRegion));
+			Key.Temple = LoadKey(KeyTypes.Temple, TShock.Regions.GetRegionByName(KeyChanger.Config.TempleRegion));
+			Key.Jungle = LoadKey(KeyTypes.Jungle, TShock.Regions.GetRegionByName(KeyChanger.Config.JungleRegion));
+			Key.Corruption = LoadKey(KeyTypes.Corruption, TShock.Regions.GetRegionByName(KeyChanger.Config.CorruptionRegion));
+			Key.Crimson = LoadKey(KeyTypes.Crimson, TShock.Regions.GetRegionByName(KeyChanger.Config.CrimsonRegion));
+			Key.Hallowed = LoadKey(KeyTypes.Hallowed, TShock.Regions.GetRegionByName(KeyChanger.Config.HallowedRegion));
+			Key.Frozen = LoadKey(KeyTypes.Frozen, TShock.Regions.GetRegionByName(KeyChanger.Config.FrozenRegion));
 		}
-		#endregion
 
-		#region LoadKey
 		/// <summary>
 		/// Loads a key from KeyChangerConfig.json.
 		/// </summary>
@@ -35,43 +32,41 @@ namespace KeyChanger
 			switch (type)
 			{
 				case KeyTypes.Temple:
-					key = new Key("temple", KeyTypes.Temple, Config.contents.EnableTempleKey);
-					key.Items = GetItems(Config.contents.TempleKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.TempleRegion);
+					key = new Key("temple", KeyTypes.Temple, KeyChanger.Config.EnableTempleKey);
+					key.Items = GetItems(KeyChanger.Config.TempleKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.TempleRegion);
 					break;
 				case KeyTypes.Jungle:
-					key = new Key("jungle", KeyTypes.Jungle, Config.contents.EnableJungleKey);
-					key.Items = GetItems(Config.contents.JungleKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.JungleRegion);
+					key = new Key("jungle", KeyTypes.Jungle, KeyChanger.Config.EnableJungleKey);
+					key.Items = GetItems(KeyChanger.Config.JungleKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.JungleRegion);
 					break;
 				case KeyTypes.Corruption:
-					key = new Key("corruption", KeyTypes.Corruption, Config.contents.EnableCorruptionKey);
-					key.Items = GetItems(Config.contents.CorruptionKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.CorruptionRegion);
+					key = new Key("corruption", KeyTypes.Corruption, KeyChanger.Config.EnableCorruptionKey);
+					key.Items = GetItems(KeyChanger.Config.CorruptionKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.CorruptionRegion);
 					break;
 				case KeyTypes.Crimson:
-					key = new Key("crimson", KeyTypes.Crimson, Config.contents.EnableCrimsonKey);
-					key.Items = GetItems(Config.contents.CrimsonKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.CrimsonRegion);
+					key = new Key("crimson", KeyTypes.Crimson, KeyChanger.Config.EnableCrimsonKey);
+					key.Items = GetItems(KeyChanger.Config.CrimsonKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.CrimsonRegion);
 					break;
 				case KeyTypes.Hallowed:
-					key = new Key("hallowed", KeyTypes.Hallowed, Config.contents.EnableHallowedKey);
-					key.Items = GetItems(Config.contents.HallowedKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.HallowedRegion);
+					key = new Key("hallowed", KeyTypes.Hallowed, KeyChanger.Config.EnableHallowedKey);
+					key.Items = GetItems(KeyChanger.Config.HallowedKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.HallowedRegion);
 					break;
 				case KeyTypes.Frozen:
-					key = new Key("frozen", KeyTypes.Frozen, Config.contents.EnableFrozenKey);
-					key.Items = GetItems(Config.contents.FrozenKeyItem);
-					key.Region = TShock.Regions.GetRegionByName(Config.contents.FrozenRegion);
+					key = new Key("frozen", KeyTypes.Frozen, KeyChanger.Config.EnableFrozenKey);
+					key.Items = GetItems(KeyChanger.Config.FrozenKeyItem);
+					key.Region = TShock.Regions.GetRegionByName(KeyChanger.Config.FrozenRegion);
 					break;
 				default:
 					return null;
 			}
 			return key;
 		}
-		#endregion
 
-		#region GetItems
 		/// <summary>
 		/// Returns a list of Terraria.Item from a list of Item ids.
 		/// </summary>
@@ -86,9 +81,7 @@ namespace KeyChanger
 			}
 			return list;
 		}
-		#endregion
 
-		#region ErrorMessageHandler
 		/// <summary>
 		/// Handles error messages thrown by erroneous / lack of parameters by checking a player's group permissions.
 		/// </summary>
@@ -109,6 +102,5 @@ namespace KeyChanger
 			error = String.Format("Invalid syntax! Proper syntax: {0}key <{1}> [type]", Commands.Specifier, valid);
 			return error;
 		}
-		#endregion
 	}
 }
