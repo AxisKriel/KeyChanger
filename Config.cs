@@ -7,6 +7,7 @@ namespace KeyChanger
 {
 	public class Config
 	{
+		public bool UseSSC = true;										// |Enabling grants legacy functionality, disabling uses the safer drop method
 		public bool EnableRegionExchanges = false;						// |Default set to false
 		public bool MarketMode = false;									// |Use only a general market region
 		//public bool EnableGoldKey = true;								// |Gold Key works similar to a currency

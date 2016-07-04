@@ -5,6 +5,7 @@ using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
 using TShockAPI.DB;
+using System.IO;
 
 namespace KeyChanger
 {
@@ -17,6 +18,8 @@ namespace KeyChanger
 
 		public override string Description => "SBPlanet KeyChanger System: Exchanges special chest keys by their correspondent items.";
 
+		public KeyTypes?[] Exchanging { get; private set; }
+
 		public override string Name => "KeyChanger";
 
 		public override Version Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -28,12 +31,92 @@ namespace KeyChanger
 			if (disposing)
 			{
 				ServerApi.Hooks.GameInitialize.Deregister(this, onInitialize);
+				ServerApi.Hooks.NetGetData.Deregister(this, onGetData);
+				ServerApi.Hooks.ServerLeave.Deregister(this, onLeave);
 			}
 		}
 
 		public override void Initialize()
 		{
 			ServerApi.Hooks.GameInitialize.Register(this, onInitialize);
+			ServerApi.Hooks.NetGetData.Register(this, onGetData, -1);
+			ServerApi.Hooks.ServerLeave.Register(this, onLeave);
+		}
+
+		private void onGetData(GetDataEventArgs e)
+		{
+			if (Config.UseSSC || e.Handled ||e.MsgID != PacketTypes.ItemDrop || TShock.Players[e.Msg.whoAmI] == null
+				|| !TShock.Players[e.Msg.whoAmI].Active || Exchanging[e.Msg.whoAmI] == null)
+			{
+				return;
+			}
+
+			using (var reader = new BinaryReader(new MemoryStream(e.Msg.readBuffer, e.Index, e.Length)))
+			{
+				int id = reader.ReadInt16();
+				if (id == 400)				// 400 = new Item
+				{
+					reader.ReadSingle();	// positionX
+					reader.ReadSingle();	// positionY
+					reader.ReadSingle();	// velocityX
+					reader.ReadSingle();	// positionY
+
+					short stack = reader.ReadInt16();
+					reader.ReadByte();		// prefix
+					reader.ReadByte();		// no delay..?
+
+					int netID = reader.ReadInt16();
+					
+
+					if (netID == (int)Exchanging[e.Msg.whoAmI])
+					{
+						// Check if the player has available slots and warn them if they do not
+						if (!TShock.Players[e.Msg.whoAmI].InventorySlotAvailable)
+						{
+							TShock.Players[e.Msg.whoAmI].SendWarningMessage("Make sure you have at least one available inventory slot to perform this exchange.");
+							return;
+						}
+
+						Key key = Utils.LoadKey(Exchanging[e.Msg.whoAmI].Value);
+						if (Config.EnableRegionExchanges)
+						{
+							Region region;
+							if (Config.MarketMode)
+								region = TShock.Regions.GetRegionByName(Config.MarketRegion);
+							else
+								region = key.Region;
+
+							// Checks if the player is inside the region
+							if (!region.InArea((int)TShock.Players[e.Msg.whoAmI].X, (int)TShock.Players[e.Msg.whoAmI].Y))
+							{
+								return;
+							}
+						}
+
+						// Cancel the drop
+						TShock.Players[e.Msg.whoAmI].SendData(PacketTypes.ItemDrop, "", id);
+						// If the item is stackable, give them the same amount of in return; otherwise, return the excess
+						Random rand = new Random();
+						Item give = key.Items[rand.Next(0, key.Items.Count)];
+						if (give.maxStack >= stack)
+						{
+							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.name, give.width, give.height, stack);
+							Item take = TShock.Utils.GetItemById((int)key.Type);
+							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged {stack} {take.name}(s) for {stack} {give.name}(s)!");
+						}
+						else
+						{
+							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.name, give.width, give.height, 1);
+							Item take = TShock.Utils.GetItemById((int)key.Type);
+							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged a {take.name} for 1 {give.name}!");
+							TShock.Players[e.Msg.whoAmI].GiveItem(take.netID, take.name, take.width, take.height, stack - 1);
+							TShock.Players[e.Msg.whoAmI].SendSuccessMessage("Returned the excess keys.");
+						}
+						Exchanging[e.Msg.whoAmI] = null;
+						e.Handled = true;
+					}
+				}
+			}
 		}
 
 		private void onInitialize(EventArgs e)
@@ -54,7 +137,15 @@ namespace KeyChanger
 				}
 			});
 
-			Utils.InitKeys();
+			Exchanging = new KeyTypes?[Main.maxNetPlayers];
+		}
+
+		private void onLeave(LeaveEventArgs e)
+		{
+			if (e.Who >= 0 || e.Who < Main.maxNetPlayers)
+			{
+				Exchanging[e.Who] = null;
+			}
 		}
 
 		private void KeyChange(CommandArgs args)
@@ -86,50 +177,45 @@ namespace KeyChanger
 				switch (cmd)
 				{
 					case "change":
-						if (!ply.Group.HasPermission("key.change"))
-						{
-							ply.SendErrorMessage("You do not have access to this command.");
-							break;
-						}
-
 						// Prevents cast from the server console
-						if (ply == TSPlayer.Server)
+						if (!ply.RealPlayer)
 						{
 							ply.SendErrorMessage("You must use this command in-game.");
 							return;
 						}
 
-						Key key;
-						string str = args.Parameters[1].ToLower();
+						if (!ply.HasPermission("key.change"))
+						{
+							ply.SendErrorMessage("You do not have access to this command.");
+							break;
+						}
 
-						if (str == Key.Temple.Name)
-							key = Key.Temple;
-						else if (str == Key.Jungle.Name)
-							key = Key.Jungle;
-						else if (str == Key.Corruption.Name)
-							key = Key.Corruption;
-						else if (str == Key.Crimson.Name)
-							key = Key.Crimson;
-						else if (str == Key.Hallowed.Name)
-							key = Key.Hallowed;
-						else if (str == Key.Frozen.Name)
-							key = Key.Frozen;
-						else
+						KeyTypes type;
+						if (!Enum.TryParse(args.Parameters[1].ToLowerInvariant(), true, out type))
 						{
 							ply.SendErrorMessage("Invalid key type! Available types: " + String.Join(", ",
-								Key.Temple.Enabled ? Key.Temple.Name : null,
-								Key.Jungle.Enabled ? Key.Jungle.Name : null,
-								Key.Corruption.Enabled ? Key.Corruption.Name : null,
-								Key.Crimson.Enabled ? Key.Crimson.Name : null,
-								Key.Hallowed.Enabled ? Key.Hallowed.Name : null,
-								Key.Frozen.Enabled ? Key.Frozen.Name : null));
+								Config.EnableTempleKey ? "temple" : null,
+								Config.EnableJungleKey ? "jungle" : null,
+								Config.EnableCorruptionKey ? "corruption" : null,
+								Config.EnableCrimsonKey ? "crimson" : null,
+								Config.EnableHallowedKey ? "hallowed" : null,
+								Config.EnableFrozenKey ? "frozen" : null));
 							return;
 						}
 
+						Key key = Utils.LoadKey(type);
 						// Verifies whether the key has been enabled
 						if (!key.Enabled)
 						{
 							ply.SendInfoMessage("The selected key is disabled.");
+							return;
+						}
+
+						if (!Config.UseSSC)
+						{
+							// Begin the exchange, expect the player to drop the key
+							Exchanging[args.Player.Index] = type;
+							ply.SendInfoMessage($"Drop (hold & right-click) any number of {key.Name} keys to proceed.");
 							return;
 						}
 
@@ -157,7 +243,7 @@ namespace KeyChanger
 							}
 
 							// Checks if the player is inside the region
-							if (args.Player.CurrentRegion != region)
+							if (!region.InArea((int)args.Player.X, (int)args.Player.Y))
 							{
 								ply.SendErrorMessage("You are not in a valid region to make this exchange.");
 								return;
@@ -192,32 +278,31 @@ namespace KeyChanger
 
 					case "reload":
 						{
-							if (!ply.Group.HasPermission("key.reload"))
+							if (!ply.HasPermission("key.reload"))
 							{
 								ply.SendErrorMessage("You do not have access to this command.");
 								break;
 							}
 
 							Config = Config.Read();
-							Utils.InitKeys();
 							ply.SendSuccessMessage("KeyChangerConfig.json reloaded successfully.");
 							break;
 						}
 
 					case "list":
 						{
-							ply.SendMessage("Temple Key - " + String.Join(", ", Key.Temple.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Jungle Key - " + String.Join(", ", Key.Jungle.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Corruption Key - " + String.Join(", ", Key.Corruption.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Crimson Key - " + String.Join(", ", Key.Crimson.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Hallowed Key - " + String.Join(", ", Key.Hallowed.Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Frozen Key - " + String.Join(", ", Key.Frozen.Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Temple Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Temple).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Jungle Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Jungle).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Corruption Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Corruption).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Crimson Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Crimson).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Hallowed Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Hallowed).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Frozen Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Frozen).Items.Select(i => i.name)), Color.Goldenrod);
 							break;
 						}
 
 					case "mode":
 						{
-							if (!ply.Group.HasPermission("key.mode"))
+							if (!ply.HasPermission("key.mode"))
 							{
 								ply.SendErrorMessage("You do not have access to this command.");
 								break;

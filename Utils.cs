@@ -9,24 +9,11 @@ namespace KeyChanger
 	class Utils
 	{
 		/// <summary>
-		/// Loads all keys.
-		/// </summary>
-		public static void InitKeys()
-		{
-			Key.Temple = LoadKey(KeyTypes.Temple, TShock.Regions.GetRegionByName(KeyChanger.Config.TempleRegion));
-			Key.Jungle = LoadKey(KeyTypes.Jungle, TShock.Regions.GetRegionByName(KeyChanger.Config.JungleRegion));
-			Key.Corruption = LoadKey(KeyTypes.Corruption, TShock.Regions.GetRegionByName(KeyChanger.Config.CorruptionRegion));
-			Key.Crimson = LoadKey(KeyTypes.Crimson, TShock.Regions.GetRegionByName(KeyChanger.Config.CrimsonRegion));
-			Key.Hallowed = LoadKey(KeyTypes.Hallowed, TShock.Regions.GetRegionByName(KeyChanger.Config.HallowedRegion));
-			Key.Frozen = LoadKey(KeyTypes.Frozen, TShock.Regions.GetRegionByName(KeyChanger.Config.FrozenRegion));
-		}
-
-		/// <summary>
 		/// Loads a key from KeyChangerConfig.json.
 		/// </summary>
 		/// <param name="type">The type of key to load.</param>
 		/// <returns>The key with all the required data.</returns>
-		public static Key LoadKey(KeyTypes type, Region region = null)
+		public static Key LoadKey(KeyTypes type)
 		{
 			Key key;
 			switch (type)
@@ -92,9 +79,9 @@ namespace KeyChanger
 			string error;
 			var list = new List<string>()
 			{
-				ply.Group.HasPermission("key.change") ? "change" : null,
-				ply.Group.HasPermission("key.reload") ? "reload" : null,
-				ply.Group.HasPermission("key.mode") ? "mode" : null,
+				ply.HasPermission("key.change") ? "change" : null,
+				ply.HasPermission("key.reload") ? "reload" : null,
+				ply.HasPermission("key.mode") ? "mode" : null,
 				"list"
 			};
 
