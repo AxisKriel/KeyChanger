@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace KeyChanger
+﻿namespace KeyChanger
 {
-	[Flags]
 	public enum KeyTypes
 	{
 		Temple = Terraria.ID.ItemID.TempleKey,

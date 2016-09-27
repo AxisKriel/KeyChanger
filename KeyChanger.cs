@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
 using TShockAPI.DB;
-using System.IO;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 23)]
+	[ApiVersion(1, 24)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		public override string Author => "Enerdy";
