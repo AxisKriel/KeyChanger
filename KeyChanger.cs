@@ -9,7 +9,7 @@ using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 24)]
+	[ApiVersion(1, 25)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		public override string Author => "Enerdy";
