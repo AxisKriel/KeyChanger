@@ -80,7 +80,7 @@ namespace KeyChanger
 				savepath = TShock.SavePath;
 			}
 
-			savepath += "KeyChangerConfig.json";
+			savepath = Path.Combine(savepath, "KeyChangerConfig.json");
 
 			Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
