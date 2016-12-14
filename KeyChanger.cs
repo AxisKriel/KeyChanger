@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -9,7 +10,7 @@ using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(1, 25)]
+	[ApiVersion(2, 0)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		public override string Author => "Enerdy";
