@@ -10,6 +10,7 @@ MySql.Data.dll
 *.xml
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
 
 # Build results

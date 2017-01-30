@@ -244,7 +244,7 @@ namespace KeyChanger
 							}
 
 							// Checks if the player is inside the region
-							if (!region.InArea((int)args.Player.X, (int)args.Player.Y))
+							if (!region.InArea(args.Player.TileX, args.Player.TileY))
 							{
 								ply.SendErrorMessage("You are not in a valid region to make this exchange.");
 								return;
