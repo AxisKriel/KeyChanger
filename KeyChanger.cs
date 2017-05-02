@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Localization;
 using TerrariaApi.Server;
 using TShockAPI;
 using TShockAPI.DB;
 
 namespace KeyChanger
 {
-	[ApiVersion(2, 0)]
+	[ApiVersion(2, 1)]
 	public class KeyChanger : TerrariaPlugin
 	{
 		public override string Author => "Enerdy";
@@ -101,16 +102,16 @@ namespace KeyChanger
 						Item give = key.Items[rand.Next(0, key.Items.Count)];
 						if (give.maxStack >= stack)
 						{
-							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.name, give.width, give.height, stack);
+							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.Name, give.width, give.height, stack);
 							Item take = TShock.Utils.GetItemById((int)key.Type);
-							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged {stack} {take.name}(s) for {stack} {give.name}(s)!");
+							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged {stack} {take.Name}(s) for {stack} {give.Name}(s)!");
 						}
 						else
 						{
-							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.name, give.width, give.height, 1);
+							TShock.Players[e.Msg.whoAmI].GiveItem(give.netID, give.Name, give.width, give.height, 1);
 							Item take = TShock.Utils.GetItemById((int)key.Type);
-							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged a {take.name} for 1 {give.name}!");
-							TShock.Players[e.Msg.whoAmI].GiveItem(take.netID, take.name, take.width, take.height, stack - 1);
+							TShock.Players[e.Msg.whoAmI].SendSuccessMessage($"Exchanged a {take.Name} for 1 {give.Name}!");
+							TShock.Players[e.Msg.whoAmI].GiveItem(take.netID, take.Name, take.width, take.height, stack - 1);
 							TShock.Players[e.Msg.whoAmI].SendSuccessMessage("Returned the excess keys.");
 						}
 						Exchanging[e.Msg.whoAmI] = null;
@@ -262,12 +263,12 @@ namespace KeyChanger
 								if (item.stack == 1 || ply.InventorySlotAvailable)
 								{
 									ply.TPlayer.inventory[i].stack--;
-									NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, String.Empty, ply.Index, i);
+									NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, ply.Index, i);
 									Random rand = new Random();
 									Item give = key.Items[rand.Next(0, key.Items.Count)];
-									ply.GiveItem(give.netID, give.name, give.width, give.height, 1);
+									ply.GiveItem(give.netID, give.Name, give.width, give.height, 1);
 									Item take = TShock.Utils.GetItemById((int)key.Type);
-									ply.SendSuccessMessage("Exchanged a {0} for 1 {1}!", take.name, give.name);
+									ply.SendSuccessMessage("Exchanged a {0} for 1 {1}!", take.Name, give.Name);
 									return;
 								}
 								// Sent if neither of the above conditions were fulfilled.
@@ -292,12 +293,12 @@ namespace KeyChanger
 
 					case "list":
 						{
-							ply.SendMessage("Temple Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Temple).Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Jungle Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Jungle).Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Corruption Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Corruption).Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Crimson Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Crimson).Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Hallowed Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Hallowed).Items.Select(i => i.name)), Color.Goldenrod);
-							ply.SendMessage("Frozen Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Frozen).Items.Select(i => i.name)), Color.Goldenrod);
+							ply.SendMessage("Temple Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Temple).Items.Select(i => i.Name)), Color.Goldenrod);
+							ply.SendMessage("Jungle Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Jungle).Items.Select(i => i.Name)), Color.Goldenrod);
+							ply.SendMessage("Corruption Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Corruption).Items.Select(i => i.Name)), Color.Goldenrod);
+							ply.SendMessage("Crimson Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Crimson).Items.Select(i => i.Name)), Color.Goldenrod);
+							ply.SendMessage("Hallowed Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Hallowed).Items.Select(i => i.Name)), Color.Goldenrod);
+							ply.SendMessage("Frozen Key - " + String.Join(", ", Utils.LoadKey(KeyTypes.Frozen).Items.Select(i => i.Name)), Color.Goldenrod);
 							break;
 						}
 
